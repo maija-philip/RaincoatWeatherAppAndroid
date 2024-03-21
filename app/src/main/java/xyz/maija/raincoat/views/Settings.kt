@@ -23,19 +23,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun Settings(modifier: Modifier = Modifier) {
+fun Settings(navController: NavController) {
 
     // Declare State Variables
     var hotcold by remember { mutableFloatStateOf(50.0f) }
 
     // UI
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.Start,
@@ -121,7 +123,8 @@ fun SectionLink(title: String, data: String) {
 @Preview(showBackground = true)
 @Composable
 fun SettingsPreview() {
+    val navController = rememberNavController()
     RaincoatTheme {
-        Settings()
+        Settings(navController = navController)
     }
 }

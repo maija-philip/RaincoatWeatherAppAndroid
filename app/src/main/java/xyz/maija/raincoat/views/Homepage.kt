@@ -3,6 +3,7 @@ package xyz.maija.raincoat.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,16 +32,19 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.R
+import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun Homepage(modifier: Modifier = Modifier) {
+fun Homepage(navController: NavController) {
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,7 +56,7 @@ fun Homepage(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.Start
         ) {
 
-            GoToSettings()
+            GoToSettings(navController = navController)
             WeatherData()
 
         } // Header Text Column
@@ -100,7 +104,7 @@ fun WeatherText() {
 
 
 @Composable
-fun GoToSettings() {
+fun GoToSettings(navController: NavController) {
     Row (
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -108,7 +112,14 @@ fun GoToSettings() {
             imageVector = Icons.Outlined.Settings,
             contentDescription = "Settings",
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .clickable {
+                // Navigate to Settings
+                navController.navigate(Screen.SettingsPage.route) {
+                    launchSingleTop = true
+                } // navcontroller.navigate
+            }
         ) // Icon
         Text(
             text = "Sunnyvale, CA",
@@ -216,7 +227,8 @@ fun WeatherImage() {
 @Preview(showBackground = true)
 @Composable
 fun HomepagePreview() {
+    val navController = rememberNavController()
     RaincoatTheme {
-        Homepage()
+        Homepage(navController)
     }
 }

@@ -53,18 +53,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun Location(modifier: Modifier = Modifier) {
+fun Location(navController: NavController) {
 
     var chosenCountry by remember { mutableStateOf("") }
     var enteredLocationState by remember { mutableStateOf("") }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(24.dp)
             .padding(top = 24.dp),
@@ -88,8 +90,6 @@ fun Location(modifier: Modifier = Modifier) {
         CountryDropDown(chosenCountry) {
             chosenCountry = it
         }
-
-        ExpirationTimeMenuBox()
         
         RoundedTextBox(
             hint = "94087",
@@ -106,101 +106,61 @@ fun Location(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 // used this resource https://alexzh.com/jetpack-compose-dropdownmenu/
+// and this https://stackoverflow.com/questions/77336149/dropdown-menu-in-compose-overlaps-system-keyboard
 fun CountryDropDown(chosenCountry: String, updateChosenCountry: (String) -> Unit) {
 
     var expanded by remember { mutableStateOf(false) }
     val countryList = arrayOf("Korea", "Italy", "Latvia", "Kenya", "India", "Nepal")
 
-    Box(
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
         modifier = Modifier
-            .fillMaxWidth()
             .padding(32.dp)
             .clip(RoundedCornerShape(50.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(horizontal = 8.dp),
     ) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = !expanded
-            },
-        ) {
-            TextField(
-                value = chosenCountry,
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor()
-            )
-
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = false }
-            ) {
-
-                countryList.forEach { item ->
-                    DropdownMenuItem(
-                        text = { Text(text = item) },
-                        onClick = {
-                            updateChosenCountry(item)
-                            expanded = false
-                        } // onclick for item
-                    ) // dropdown menu item
-                } // for each country
-            } // dropdown menu
-        } // Exposed dropdown box
-    } // Box
-
-} // CountryDropDown
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ExpirationTimeMenuBox() {
-    val suggestions = listOf("Dzień", "Tydzień", "Miesiąc", "Rok", "Dzień")
-    var isExpanded by remember { mutableStateOf(false) }
-    var textFieldValue by remember {
-        mutableStateOf(TextFieldValue(""))
-    }
-
-    ExposedDropdownMenuBox(
-        expanded = isExpanded,
-        onExpandedChange = { isExpanded = !isExpanded },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp)
-    ) {
         TextField(
-            value = textFieldValue,
-            onValueChange = { textFieldValue = it },
-            label = { Text(text = "Termin") },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
-                keyboardType = KeyboardType.Number
+            value = chosenCountry,
+            onValueChange = {
+                updateChosenCountry(it)
+            },
+            label = { Text(text = "Choose a country") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            readOnly = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                cursorColor = MaterialTheme.colorScheme.primary,
             ),
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor()
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(50.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .padding(horizontal = 8.dp),
         )
         ExposedDropdownMenu(
-            expanded = isExpanded,
-            onDismissRequest = { isExpanded = false },
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
             modifier = Modifier.exposedDropdownSize(),
         ) {
-            suggestions.forEach { suggestion ->
+            countryList.forEach { country ->
                 DropdownMenuItem(
-                    text = { Text(text = suggestion) },
+                    text = { Text(text = country) },
                     onClick = {
-                        textFieldValue = TextFieldValue(suggestion, selection = TextRange(suggestion.length))
-                        isExpanded = false
-                    }
-                )
-            }
-        }
-    }
-}
+                        updateChosenCountry(country)
+                        expanded = false
+                    } // onclick
+                ) // dropdown menu item
+            } // for each country
+        } // exposed dropdown menu
+    } // Exposed dropdown menu box
 
+} // CountryDropDown
 
 @Composable
 fun RoundedTextBox(hint: String, entered: String, action: (String) -> Unit) {
@@ -266,7 +226,8 @@ fun SaveButton(enteredLocation: String) {
 @Preview(showBackground = true)
 @Composable
 fun LocationPreview() {
+    val navController = rememberNavController()
     RaincoatTheme {
-        Location()
+        Location(navController)
     }
 }

@@ -23,15 +23,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.R
+import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 @Composable
-fun WelcomeWizard2(modifier: Modifier = Modifier) {
+fun WelcomeWizard2(navController: NavController) {
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,12 +78,30 @@ fun WelcomeWizard2(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    // Navigate to Homepage
+                    navController.navigate(Screen.HomePage.route) {
+                        launchSingleTop = true
+                        popUpTo(Screen.WelcomeWizard1.route) {
+                            // so we only have one main screen on the stack at a time
+                            inclusive = true
+                        } // popUpTo
+                    } // navcontroller.navigate
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Take Image", fontFamily = rubikFont)
             }
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(onClick = {
+                // Navigate to Homepage
+                navController.navigate(Screen.HomePage.route) {
+                    launchSingleTop = true
+                    popUpTo(Screen.WelcomeWizard1.route) {
+                        // so we only have one main screen on the stack at a time
+                        inclusive = true
+                    } // popUpTo
+                } // navcontroller.navigate
+            }) {
                 Text("Skip For Now", fontFamily = rubikFont)
             }
         } // Buttons Column
@@ -92,7 +113,8 @@ fun WelcomeWizard2(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun WelcomeWizard2Preview() {
+    val navController = rememberNavController()
     RaincoatTheme {
-        WelcomeWizard2()
+        WelcomeWizard2(navController)
     }
 }

@@ -37,14 +37,17 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.classes.Hairstyle
 import xyz.maija.raincoat.R
+import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun WelcomeWizard1(modifier: Modifier = Modifier) {
+fun WelcomeWizard1(navController: NavController) {
 
     var hairstyle by remember { mutableStateOf(Hairstyle.BALD) }
     var hotcold by remember { mutableStateOf(50.0f) }
@@ -57,7 +60,7 @@ fun WelcomeWizard1(modifier: Modifier = Modifier) {
     )
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,7 +116,12 @@ fun WelcomeWizard1(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        // Navigate to Welcome Wizard 2
+                        navController.navigate(Screen.WelcomeWizard2.route) {
+                            launchSingleTop = true
+                        } // navcontroller.navigate
+                    } // onclick
                 ) {
                     Text(
                         text = "Continue",
@@ -251,7 +259,8 @@ fun HairChoiceBox(
 @Preview(showBackground = true)
 @Composable
 fun WelcomeWizard1Preview() {
+    val navController = rememberNavController()
     RaincoatTheme {
-        WelcomeWizard1()
+        WelcomeWizard1(navController = navController)
     }
 }

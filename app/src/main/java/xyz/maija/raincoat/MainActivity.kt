@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import xyz.maija.raincoat.navigation.Navigation
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 import xyz.maija.raincoat.views.Homepage
 import xyz.maija.raincoat.views.Location
@@ -25,8 +26,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.surface
                 ) {
 
-                    // Navigation()
-                    Location()
+                    Navigation()
+                    // Location()
 
                 } // Surface
             } // Raincoat Theme
