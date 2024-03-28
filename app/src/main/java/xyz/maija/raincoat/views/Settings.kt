@@ -30,14 +30,14 @@ import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun Settings(navController: NavController) {
+fun Settings(navController: NavController, modifier: Modifier = Modifier) {
 
     // Declare State Variables
     var hotcold by remember { mutableFloatStateOf(50.0f) }
 
     // UI
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.Start,

@@ -41,10 +41,10 @@ import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun Homepage(navController: NavController) {
+fun Homepage(navController: NavController, modifier: Modifier = Modifier) {
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

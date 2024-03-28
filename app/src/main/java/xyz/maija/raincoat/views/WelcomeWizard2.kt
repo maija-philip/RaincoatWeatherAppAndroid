@@ -31,10 +31,10 @@ import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 @Composable
-fun WelcomeWizard2(navController: NavController) {
+fun WelcomeWizard2(navController: NavController, modifier: Modifier = Modifier) {
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

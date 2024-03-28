@@ -47,7 +47,7 @@ import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun WelcomeWizard1(navController: NavController) {
+fun WelcomeWizard1(navController: NavController, modifier: Modifier = Modifier) {
 
     var hairstyle by remember { mutableStateOf(Hairstyle.BALD) }
     var hotcold by remember { mutableStateOf(50.0f) }
@@ -60,7 +60,7 @@ fun WelcomeWizard1(navController: NavController) {
     )
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

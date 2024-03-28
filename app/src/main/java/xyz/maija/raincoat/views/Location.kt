@@ -60,13 +60,13 @@ import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun Location(navController: NavController) {
+fun Location(navController: NavController, modifier: Modifier = Modifier) {
 
     var chosenCountry by remember { mutableStateOf("") }
     var enteredLocationState by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(24.dp)
             .padding(top = 24.dp),
