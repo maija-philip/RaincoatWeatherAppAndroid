@@ -2,11 +2,14 @@ package xyz.maija.raincoat.navigation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import xyz.maija.raincoat.classes.RaincoatViewModel
+import xyz.maija.raincoat.classes.User
 import xyz.maija.raincoat.views.Homepage
 import xyz.maija.raincoat.views.Location
 import xyz.maija.raincoat.views.Settings
@@ -18,6 +21,8 @@ import xyz.maija.raincoat.views.WelcomeWizard2
 fun Navigation() {
 
     val navController = rememberNavController() // navigation controller state
+    val raincoatViewModel: RaincoatViewModel = viewModel()
+
 
     NavHost(
         navController = navController,
@@ -29,7 +34,12 @@ fun Navigation() {
         } // composable screen
 
         composable(Screen.WelcomeWizard1.route) {
-            WelcomeWizard1(navController)
+            WelcomeWizard1(
+                navController,
+                setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
+                setHairstyle = { raincoatViewModel.setHair(it) },
+                setHotCold = { raincoatViewModel.setHotCold(it) }
+            )
         } // composable screen
 
         composable(Screen.WelcomeWizard2.route) {

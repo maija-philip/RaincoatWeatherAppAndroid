@@ -14,8 +14,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +36,28 @@ import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 @Composable
-fun WelcomeWizard2(navController: NavController, modifier: Modifier = Modifier) {
+fun WelcomeWizard2(
+    navController: NavController,
+    setSkinColor: (Color) -> Unit,
+    setPreviousScreen: (Screen) -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    var skinColor by remember { mutableStateOf(Color.Red) }
+
+    fun navigateToNextScreen() {
+        // Navigate to Homepage
+        // TODO: back to settings or to homepage?
+        setSkinColor(skinColor)
+        setPreviousScreen(Screen.WelcomeWizard2)
+        navController.navigate(Screen.HomePage.route) {
+            launchSingleTop = true
+            popUpTo(Screen.WelcomeWizard1.route) {
+                // so we only have one main screen on the stack at a time
+                inclusive = true
+            } // popUpTo
+        } // navcontroller.navigate
+    } // navigateToNextScreen
 
     Column(
         modifier = modifier
@@ -68,7 +94,7 @@ fun WelcomeWizard2(navController: NavController, modifier: Modifier = Modifier) 
             contentDescription = "Bald headshot",
             modifier = Modifier
                 .size(300.dp)
-                .background(MaterialTheme.colorScheme.error)
+                .background(skinColor)
                 .border(4.dp, MaterialTheme.colorScheme.surface),
             contentScale = ContentScale.Fit,
         )
@@ -79,35 +105,23 @@ fun WelcomeWizard2(navController: NavController, modifier: Modifier = Modifier) 
         ) {
             Button(
                 onClick = {
-                    // Navigate to Homepage
-                    navController.navigate(Screen.HomePage.route) {
-                        launchSingleTop = true
-                        popUpTo(Screen.WelcomeWizard1.route) {
-                            // so we only have one main screen on the stack at a time
-                            inclusive = true
-                        } // popUpTo
-                    } // navcontroller.navigate
+                    navigateToNextScreen()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Take Image", fontFamily = rubikFont)
             }
             TextButton(onClick = {
-                // Navigate to Homepage
-                navController.navigate(Screen.HomePage.route) {
-                    launchSingleTop = true
-                    popUpTo(Screen.WelcomeWizard1.route) {
-                        // so we only have one main screen on the stack at a time
-                        inclusive = true
-                    } // popUpTo
-                } // navcontroller.navigate
+                navigateToNextScreen()
             }) {
                 Text("Skip For Now", fontFamily = rubikFont)
             }
         } // Buttons Column
     } // overarching column
 
-}
+
+
+} // WelcomeWizard2
 
 
 @Preview(showBackground = true)
@@ -115,6 +129,10 @@ fun WelcomeWizard2(navController: NavController, modifier: Modifier = Modifier) 
 fun WelcomeWizard2Preview() {
     val navController = rememberNavController()
     RaincoatTheme {
-        WelcomeWizard2(navController)
+        WelcomeWizard2(
+            navController,
+            setSkinColor = { },
+            setPreviousScreen = {}
+            )
     }
 }
