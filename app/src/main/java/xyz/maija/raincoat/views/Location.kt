@@ -56,6 +56,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.classes.Location
+import xyz.maija.raincoat.data.Countries
+import xyz.maija.raincoat.data.Country
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
@@ -70,7 +72,7 @@ fun LocationScreen(
     modifier: Modifier = Modifier
 ) {
 
-    var chosenCountry by remember { mutableStateOf("") }
+    var chosenCountry by remember { mutableStateOf(Country("--", "--")) }
     var enteredLocationState by remember { mutableStateOf("") }
 
     Column(
@@ -92,6 +94,12 @@ fun LocationScreen(
             textAlign = TextAlign.Center,
             // modifier = Modifier.padding(bottom = 40.dp)
         ) // Enter a Location
+        Text(
+            text = "Choose you country and enter your postal code",
+            fontFamily = rubikFont,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 32.dp)
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -121,10 +129,9 @@ fun LocationScreen(
 @Composable
 // used this resource https://alexzh.com/jetpack-compose-dropdownmenu/
 // and this https://stackoverflow.com/questions/77336149/dropdown-menu-in-compose-overlaps-system-keyboard
-fun CountryDropDown(chosenCountry: String, updateChosenCountry: (String) -> Unit) {
+fun CountryDropDown(chosenCountry: Country, updateChosenCountry: (Country) -> Unit) {
 
     var expanded by remember { mutableStateOf(false) }
-    val countryList = arrayOf("Korea", "Italy", "Latvia", "Kenya", "India", "Nepal")
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -136,9 +143,9 @@ fun CountryDropDown(chosenCountry: String, updateChosenCountry: (String) -> Unit
             .padding(horizontal = 8.dp),
     ) {
         TextField(
-            value = chosenCountry,
+            value = chosenCountry.name,
             onValueChange = {
-                updateChosenCountry(it)
+                // todo:
             },
             label = { Text(text = "Choose a country") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -162,9 +169,9 @@ fun CountryDropDown(chosenCountry: String, updateChosenCountry: (String) -> Unit
             onDismissRequest = { expanded = false },
             modifier = Modifier.exposedDropdownSize(),
         ) {
-            countryList.forEach { country ->
+            Countries.list.forEach { country ->
                 DropdownMenuItem(
-                    text = { Text(text = country) },
+                    text = { Text(text = country.name) },
                     onClick = {
                         updateChosenCountry(country)
                         expanded = false
@@ -199,7 +206,7 @@ fun RoundedTextBox(hint: String, entered: String, action: (String) -> Unit) {
                 cursorColor = MaterialTheme.colorScheme.primary,
             ),
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
+                keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
             ),
             modifier = Modifier

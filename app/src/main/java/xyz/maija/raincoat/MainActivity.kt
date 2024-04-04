@@ -9,11 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import xyz.maija.raincoat.navigation.Navigation
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
-import xyz.maija.raincoat.views.Homepage
-import xyz.maija.raincoat.views.Location
-import xyz.maija.raincoat.views.Settings
-import xyz.maija.raincoat.views.WelcomeWizard1
-import xyz.maija.raincoat.views.WelcomeWizard2
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
