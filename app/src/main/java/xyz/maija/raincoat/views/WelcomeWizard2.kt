@@ -38,6 +38,7 @@ import xyz.maija.raincoat.ui.theme.RaincoatTheme
 @Composable
 fun WelcomeWizard2(
     navController: NavController,
+    previousScreen: Screen,
     setSkinColor: (Color) -> Unit,
     setPreviousScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier
@@ -46,17 +47,25 @@ fun WelcomeWizard2(
     var skinColor by remember { mutableStateOf(Color.Red) }
 
     fun navigateToNextScreen() {
-        // Navigate to Homepage
-        // TODO: back to settings or to homepage?
+        // val tempPrevScreen = previousScreen don't think i need this bc i'm not getting a changed version of prevscreen
         setSkinColor(skinColor)
         setPreviousScreen(Screen.WelcomeWizard2)
-        navController.navigate(Screen.HomePage.route) {
-            launchSingleTop = true
-            popUpTo(Screen.WelcomeWizard1.route) {
-                // so we only have one main screen on the stack at a time
-                inclusive = true
-            } // popUpTo
-        } // navcontroller.navigate
+
+        // check to see if we go on to the homepage or back to settings
+        if (previousScreen == Screen.WelcomeWizard1 || previousScreen == Screen.LocationPage) {
+            // navigate and clear the stack so the only thing on the stack is the homepage,
+            // you can't go back through the welcome wizard
+            navController.navigate(Screen.HomePage.route) {
+                launchSingleTop = true
+                popUpTo(Screen.WelcomeWizard1.route) {
+                    // so we only have one main screen on the stack at a time
+                    inclusive = true
+                } // popUpTo
+            } // navcontroller.navigate
+        } else {
+         // go back to settings
+            navController.popBackStack()
+        }
     } // navigateToNextScreen
 
     Column(
@@ -131,6 +140,7 @@ fun WelcomeWizard2Preview() {
     RaincoatTheme {
         WelcomeWizard2(
             navController,
+            previousScreen = Screen.WelcomeWizard1,
             setSkinColor = { },
             setPreviousScreen = {}
             )

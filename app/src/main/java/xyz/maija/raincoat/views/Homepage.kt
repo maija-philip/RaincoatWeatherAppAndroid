@@ -35,13 +35,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.R
+import xyz.maija.raincoat.classes.User
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun Homepage(navController: NavController, modifier: Modifier = Modifier) {
+fun Homepage(
+    navController: NavController,
+    user: User,
+    setPreviousScreen: (Screen) -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     Column(
         modifier = modifier
@@ -56,12 +62,12 @@ fun Homepage(navController: NavController, modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.Start
         ) {
 
-            GoToSettings(navController = navController)
+            GoToSettings(navController = navController, setPreviousScreen = { setPreviousScreen(it) })
             WeatherData()
 
         } // Header Text Column
 
-        WeatherImage()
+        WeatherImage(user)
 
         Column(
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
@@ -104,7 +110,7 @@ fun WeatherText() {
 
 
 @Composable
-fun GoToSettings(navController: NavController) {
+fun GoToSettings(navController: NavController, setPreviousScreen: (Screen) -> Unit) {
     Row (
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -115,10 +121,11 @@ fun GoToSettings(navController: NavController) {
             modifier = Modifier
                 .padding(end = 8.dp)
                 .clickable {
-                // Navigate to Settings
-                navController.navigate(Screen.SettingsPage.route) {
-                    launchSingleTop = true
-                } // navcontroller.navigate
+                    setPreviousScreen(Screen.HomePage)
+                    // Navigate to Settings
+                    navController.navigate(Screen.SettingsPage.route) {
+                        launchSingleTop = true
+                    } // navcontroller.navigate
             }
         ) // Icon
         Text(
@@ -211,13 +218,13 @@ fun WeatherTemps(current: Int, low: Int, high: Int) {
 
 
 @Composable
-fun WeatherImage() {
+fun WeatherImage(user: User) {
     Image(
         painter = painterResource(id = R.drawable.scorching_bald_light),
         contentDescription = "Person wearing shorts and a tank top",
         modifier = Modifier
-            .scale(2.2f)
-            .background(MaterialTheme.colorScheme.error)
+            .scale(1.4f)
+            .background(user.skincolor)
             .border(4.dp, MaterialTheme.colorScheme.surface),
         contentScale = ContentScale.Fit,
     )
@@ -229,6 +236,6 @@ fun WeatherImage() {
 fun HomepagePreview() {
     val navController = rememberNavController()
     RaincoatTheme {
-        Homepage(navController)
+        Homepage(navController, User(), setPreviousScreen = { })
     }
 }

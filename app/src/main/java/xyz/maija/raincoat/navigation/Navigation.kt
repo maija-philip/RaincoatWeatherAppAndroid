@@ -1,17 +1,14 @@
 package xyz.maija.raincoat.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import xyz.maija.raincoat.classes.RaincoatViewModel
 import xyz.maija.raincoat.classes.User
+import xyz.maija.raincoat.data.api.model.RaincoatViewModel
 import xyz.maija.raincoat.views.Homepage
-import xyz.maija.raincoat.views.Location
+import xyz.maija.raincoat.views.LocationScreen
 import xyz.maija.raincoat.views.Settings
 import xyz.maija.raincoat.views.WelcomeWizard1
 import xyz.maija.raincoat.views.WelcomeWizard2
@@ -26,11 +23,15 @@ fun Navigation() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.WelcomeWizard1.route, // homepage or welcome wizard
+        startDestination = Screen.WelcomeWizard1.route, // TODO: homepage or welcome wizard based on data
     ) {
         // builder
         composable(Screen.HomePage.route) {
-            Homepage(navController)
+            Homepage(
+                navController,
+                user = raincoatViewModel.user,
+                setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) }
+            )
         } // composable screen
 
         composable(Screen.WelcomeWizard1.route) {
@@ -43,38 +44,32 @@ fun Navigation() {
         } // composable screen
 
         composable(Screen.WelcomeWizard2.route) {
-            WelcomeWizard2(navController)
+            WelcomeWizard2(
+                navController,
+                previousScreen = raincoatViewModel.previousScreen,
+                setSkinColor = { raincoatViewModel.setSkinColor(it) },
+                setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
+            )
         } // composable screen
 
         composable(Screen.SettingsPage.route) {
-            Settings(navController)
+            Settings(
+                navController,
+                user = raincoatViewModel.user,
+                setHotCold = { raincoatViewModel.setHotCold(it) },
+                setHairstyle = { raincoatViewModel.setHair(it) },
+                setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
+            )
         } // composable screen
 
         composable(Screen.LocationPage.route) {
-            Location(navController)
+            LocationScreen(
+                navController,
+                previousScreen = raincoatViewModel.previousScreen,
+                setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
+                setLocation = { raincoatViewModel.setLocation(it) }
+            )
         } // composable screen
-
-
-//        // arguments are passed as part of the route url
-//        // use /{...} - value for each required param
-//        // ex /{name}/{id}/{birthday}/...
-//        // use ?name={name} or ?name={name}&id={id}... <- these are for optional params
-//        // app will crash if don't provide required params!
-//        // should also do validation
-//        composable(
-//            Screen.SettingsPage.route + "/{name}",
-//            arguments = listOf( // always needs to be a list even if it's only one
-//                navArgument("name") {
-//                    type = NavType.StringType // also defaults to string
-//                    defaultValue = ""
-//                    nullable = true
-//                }
-//            )
-//        ) { entry ->
-//            // can get an entry of each type for each argument
-//            // it's a bundle
-//            Text("Argument: ${entry.arguments?.getString("name")}")
-//        } // composable main screen
 
     } // NavHost
 

@@ -1,12 +1,13 @@
-package xyz.maija.raincoat.classes
+package xyz.maija.raincoat.data.api.model
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import xyz.maija.raincoat.classes.Hairstyle
+import xyz.maija.raincoat.classes.Location
+import xyz.maija.raincoat.classes.User
 import xyz.maija.raincoat.navigation.Screen
 
 // can only have one ViewModel per app

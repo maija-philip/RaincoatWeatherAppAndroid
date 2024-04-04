@@ -55,12 +55,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import xyz.maija.raincoat.classes.Location
+import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
 @Composable
-fun Location(navController: NavController, modifier: Modifier = Modifier) {
+fun LocationScreen(
+    navController: NavController,
+    previousScreen: Screen,
+    setPreviousScreen: (Screen) -> Unit,
+    setLocation: (Location) -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     var chosenCountry by remember { mutableStateOf("") }
     var enteredLocationState by remember { mutableStateOf("") }
@@ -98,7 +106,13 @@ fun Location(navController: NavController, modifier: Modifier = Modifier) {
                 enteredLocationState = newLocation
             })
 
-        SaveButton(enteredLocationState)
+        SaveButton(
+            navController = navController,
+            location = Location(),
+            previousScreen = previousScreen,
+            setPreviousScreen = { setPreviousScreen(it) },
+            setLocation = { setLocation(it) }
+        ) // save button
 
     } // overarching column
 } // Settings
@@ -204,7 +218,13 @@ fun RoundedTextBox(hint: String, entered: String, action: (String) -> Unit) {
 } // RoundedTextBox
 
 @Composable
-fun SaveButton(enteredLocation: String) {
+fun SaveButton(
+    navController: NavController,
+    location: Location,
+    previousScreen: Screen,
+    setPreviousScreen: (Screen) -> Unit,
+    setLocation: (Location) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -215,7 +235,21 @@ fun SaveButton(enteredLocation: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),
-            onClick = { /*TODO*/ }
+            onClick = {
+                // val tempPrevScreen = previousScreen don't think i need this bc i'm not getting a changed version of previous screen
+                setLocation(location)
+                setPreviousScreen(Screen.LocationPage)
+
+                // check to see if we go on to welcome wizard 2 or back to settings
+                if (previousScreen == Screen.WelcomeWizard1 ) {
+                    navController.navigate(Screen.WelcomeWizard2.route) {
+                        launchSingleTop = true
+                    } // navcontroller.navigate
+                } else {
+                    // go back to settings
+                    navController.popBackStack()
+                }
+            } // onclick - navigate
         ) {
             Text(text = "Save")
         } // Button
@@ -228,6 +262,11 @@ fun SaveButton(enteredLocation: String) {
 fun LocationPreview() {
     val navController = rememberNavController()
     RaincoatTheme {
-        Location(navController)
+        LocationScreen(
+            navController,
+            previousScreen = Screen.HomePage,
+            setPreviousScreen = { },
+            setLocation = { }
+        )
     }
 }

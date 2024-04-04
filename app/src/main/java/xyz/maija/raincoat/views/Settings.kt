@@ -1,6 +1,8 @@
 package xyz.maija.raincoat.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,13 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,15 +32,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import xyz.maija.raincoat.classes.Hairstyle
+import xyz.maija.raincoat.classes.User
+import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(navController: NavController, modifier: Modifier = Modifier) {
+fun Settings(
+    navController: NavController,
+    user: User,
+    setHotCold: (Double) -> Unit,
+    setHairstyle: (Hairstyle) -> Unit,
+    setPreviousScreen: (Screen) -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     // Declare State Variables
-    var hotcold by remember { mutableFloatStateOf(50.0f) }
+    var hotcold by remember { mutableFloatStateOf(user.hotcold.toFloat()) }
+    var hair by remember { mutableStateOf(user.hair) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     // UI
     Column(
@@ -56,16 +76,52 @@ fun Settings(navController: NavController, modifier: Modifier = Modifier) {
         ) // Welcome
 
         RunHotOrCold(hotcold = hotcold, updateHotCold = { newHotCold ->
+            setHotCold(newHotCold.toDouble())
             hotcold = newHotCold
         }, inSettings = true)
 
         SectionHeader(text = "General")
-        SectionLink(title = "Location", data = "Sunnyvale, CA")
+        SectionLink(title = "Location", data = user.location.locationName) {
+            // onclick - navigate to location screen
+            setPreviousScreen(Screen.SettingsPage)
+            navController.navigate(Screen.LocationPage.route) {
+                launchSingleTop = true
+            } // navcontroller.navigate
+        }
 
         SectionHeader(text = "Looks")
         // SectionLink(title = "Theme", data = "Blue")
-        SectionLink(title = "Hair", data = "Bald")
-        SectionLink(title = "Skin Color", data = "")
+        SectionLink(title = "Hair", data = hair.toString().lowercase()) {
+            // onclick
+            showBottomSheet = true
+        }
+        SectionLink(title = "Skin Color", data = "") {
+            // onclick - navigate to welcomewizard2
+            setPreviousScreen(Screen.SettingsPage)
+            navController.navigate(Screen.WelcomeWizard2.route) {
+                launchSingleTop = true
+            } // navcontroller.navigate
+        } // skin color link
+
+        // modal bottom sheet for selecting hair
+        if (showBottomSheet) {
+            ModalBottomSheet(onDismissRequest = {
+                showBottomSheet = false
+            }) {
+                Box(modifier = Modifier.padding(24.dp)) {
+                    ChooseAHairstyle(
+                        updateVisible2ndSection = {},
+                        hairstyle = hair,
+                        updateHairstyle = { newHair ->
+                            hair = newHair
+                            setHairstyle(newHair)
+                        }
+                    ) // chose a hairstyle
+                }
+
+            } // ModalBottomSheet
+        } // show Bottom Sheet
+
 
     } // overarching column
 } // Settings
@@ -82,9 +138,11 @@ fun SectionHeader(text: String) {
 } // Section Header
 
 @Composable
-fun SectionLink(title: String, data: String) {
+fun SectionLink(title: String, data: String, onclick: () -> Unit) {
     Row (
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onclick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
@@ -125,6 +183,12 @@ fun SectionLink(title: String, data: String) {
 fun SettingsPreview() {
     val navController = rememberNavController()
     RaincoatTheme {
-        Settings(navController = navController)
+        Settings(
+            navController = navController,
+            user = User(),
+            setHotCold = { },
+            setHairstyle = { },
+            setPreviousScreen = { }
+        )
     }
 }
