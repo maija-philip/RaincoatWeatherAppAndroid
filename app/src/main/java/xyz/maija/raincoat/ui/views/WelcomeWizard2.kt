@@ -112,19 +112,28 @@ fun WelcomeWizard2(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = {
-                    navigateToNextScreen()
+            if (skinColor != Color.Red) { // TODO: skin grey
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { navigateToNextScreen() }
+                ) {
+                    Text("Continue", fontFamily = rubikFont)
+                }
+            } // if skin color has changed
+            PickImageGetAvgColor(
+                setAvgColor = { newColor ->
+                  skinColor = newColor
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Take Image", fontFamily = rubikFont)
-            }
-            TextButton(onClick = {
-                navigateToNextScreen()
-            }) {
-                Text("Skip For Now", fontFamily = rubikFont)
-            }
+                usesCamera = false, // TODO: check permissions
+                isSecondary = skinColor != Color.Red // TODO: skin grey
+            )
+            if (skinColor == Color.Red ) { // TODO: skin grey
+                TextButton(onClick = {
+                    navigateToNextScreen()
+                }) {
+                    Text("Skip For Now", fontFamily = rubikFont)
+                }
+            } // if skin is not changed
         } // Buttons Column
     } // overarching column
 
