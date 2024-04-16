@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.R
+import xyz.maija.raincoat.classes.User
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
@@ -44,7 +45,7 @@ fun WelcomeWizard2(
     modifier: Modifier = Modifier
 ) {
 
-    var skinColor by remember { mutableStateOf(Color.Red) }
+    var skinColor by remember { mutableStateOf(User.DEFAULT_SKIN_COLOR) }
 
     fun navigateToNextScreen() {
         // val tempPrevScreen = previousScreen don't think i need this bc i'm not getting a changed version of prevscreen
@@ -112,7 +113,7 @@ fun WelcomeWizard2(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (skinColor != Color.Red) { // TODO: skin grey
+            if (skinColor != User.DEFAULT_SKIN_COLOR) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { navigateToNextScreen() }
@@ -125,9 +126,9 @@ fun WelcomeWizard2(
                   skinColor = newColor
                 },
                 usesCamera = false, // TODO: check permissions
-                isSecondary = skinColor != Color.Red // TODO: skin grey
+                isSecondary = skinColor != User.DEFAULT_SKIN_COLOR
             )
-            if (skinColor == Color.Red ) { // TODO: skin grey
+            if (skinColor == User.DEFAULT_SKIN_COLOR ) {
                 TextButton(onClick = {
                     navigateToNextScreen()
                 }) {
