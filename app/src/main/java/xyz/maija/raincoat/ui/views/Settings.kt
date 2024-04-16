@@ -1,4 +1,4 @@
-package xyz.maija.raincoat.views
+package xyz.maija.raincoat.ui.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +49,8 @@ fun Settings(
     setPreviousScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    // TODO: add use celsius switch
 
     // Declare State Variables
     var hotcold by remember { mutableFloatStateOf(user.hotcold.toFloat()) }

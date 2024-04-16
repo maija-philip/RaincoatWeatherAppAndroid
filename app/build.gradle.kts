@@ -51,6 +51,10 @@ android {
 
 dependencies {
 
+    // getting user location
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")

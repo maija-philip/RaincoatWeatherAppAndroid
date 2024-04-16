@@ -7,11 +7,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.classes.User
 import xyz.maija.raincoat.data.api.model.RaincoatViewModel
-import xyz.maija.raincoat.views.Homepage
-import xyz.maija.raincoat.views.LocationScreen
-import xyz.maija.raincoat.views.Settings
-import xyz.maija.raincoat.views.WelcomeWizard1
-import xyz.maija.raincoat.views.WelcomeWizard2
+import xyz.maija.raincoat.ui.views.Homepage
+import xyz.maija.raincoat.ui.views.LocationScreen
+import xyz.maija.raincoat.ui.views.Settings
+import xyz.maija.raincoat.ui.views.WelcomeWizard1
+import xyz.maija.raincoat.ui.views.WelcomeWizard2
 
 
 @Composable

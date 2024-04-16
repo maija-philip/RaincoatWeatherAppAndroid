@@ -1,4 +1,4 @@
-package xyz.maija.raincoat.views
+package xyz.maija.raincoat.ui.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

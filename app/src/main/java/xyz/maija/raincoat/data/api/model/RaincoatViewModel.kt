@@ -27,6 +27,10 @@ class RaincoatViewModel: ViewModel() {
     val previousScreen: Screen
         get() = _previousScreen
 
+    private var _hasUserLocation: Boolean by mutableStateOf(false)
+    val hasUserLocation: Boolean
+        get() = _hasUserLocation
+
     private var _user: User by mutableStateOf(User())
     val user: User
         get() = _user
@@ -35,6 +39,10 @@ class RaincoatViewModel: ViewModel() {
     // changer methods
     fun setPreviousScreen(newScreen: Screen) {
         _previousScreen = newScreen
+    }
+
+    fun setHasUserLocation(value: Boolean) {
+        _hasUserLocation = value
     }
 
     fun setHair(hair: Hairstyle) { user.hair = hair }

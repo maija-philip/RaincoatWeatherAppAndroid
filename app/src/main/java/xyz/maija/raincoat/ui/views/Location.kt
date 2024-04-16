@@ -1,4 +1,4 @@
-package xyz.maija.raincoat.views
+package xyz.maija.raincoat.ui.views
 
 import android.widget.Spinner
 import android.widget.Toast

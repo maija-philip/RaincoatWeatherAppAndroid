@@ -4,6 +4,7 @@ import xyz.maija.raincoat.navigation.Screen
 
 data class Country(val name: String, val code: String)
 
+
 // list from https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes/blob/master/slim-2/slim-2.json
 /*
     some node to turn json data into format i need here:
