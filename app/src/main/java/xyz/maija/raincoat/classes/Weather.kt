@@ -1,10 +1,14 @@
 package xyz.maija.raincoat.classes
 
+import android.util.Log
+import xyz.maija.apihomework.data.api.model.WeatherData
 import xyz.maija.raincoat.R
 import xyz.maija.raincoat.utils.Temperature
 import kotlin.math.round
 
-class Weather {
+class Weather(
+    messyData: WeatherData
+) {
     var current: Int = 0
     var feelsLike: Int = 0
     var min: Int = 0
@@ -17,7 +21,28 @@ class Weather {
 
     // initializer blocks -> run code during main constructor
     init {
+        // TODO: here
+        Log.d("MEP", "Weather: Init")
+        Log.d("MEP", "Weather: feels like ${messyData.list[0].main.feelsLike}º")
     }
+
+//    init ( weatherData: WeatherSectionsStruct, user: User ) {
+//
+//        // gets weather in celcius
+//        let thisWeather = weatherData.main
+//                // round and cast double values to int
+//                current = Int(round(thisWeather.temp))
+//        feelsLike = Int(round(thisWeather.feels_like))
+//        min = Int(round(thisWeather.temp_min))
+//        max = Int(round(thisWeather.temp_max))
+//        humidity = Int(thisWeather.humidity)
+//        rainChance = Int(round(weatherData.pop * 100))
+//        message = Message()
+//
+//        message = getTempMessage(user: user)
+//
+//
+//    } // init
 
     // TODO: takes in weather data
     fun checkIfNeedsAdjusting() {
