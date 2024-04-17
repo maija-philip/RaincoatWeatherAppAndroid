@@ -85,11 +85,11 @@ class RaincoatViewModel: ViewModel() {
                 val weatherDataMessy = apiServiceWeather.getWeatherData(
                     lat = "${user.location.latitude ?: 0}",
                     lon = "${user.location.longitude ?: 0}",
-                    units = if (user.useCelsius) "metric" else "imperial",
-                    cnt = "1",
+                    units = "metric",
+                    cnt = "8",
                     appid = Globals.API_KEY
                 )
-                val weatherDataClean = Weather(weatherDataMessy)
+                val weatherDataClean = Weather(user, weatherDataMessy)
                 _weatherData = listOf(weatherDataClean)
                 weatherLoading = false
 

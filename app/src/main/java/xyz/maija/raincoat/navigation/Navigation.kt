@@ -1,11 +1,19 @@
 package xyz.maija.raincoat.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import xyz.maija.apihomework.data.api.model.City
+import xyz.maija.apihomework.data.api.model.Coord
+import xyz.maija.apihomework.data.api.model.WeatherData
 import xyz.maija.raincoat.classes.User
+import xyz.maija.raincoat.classes.Weather
 import xyz.maija.raincoat.data.api.model.RaincoatViewModel
 import xyz.maija.raincoat.ui.views.Homepage
 import xyz.maija.raincoat.ui.views.LocationScreen
@@ -19,7 +27,7 @@ fun Navigation() {
 
     val navController = rememberNavController() // navigation controller state
     val raincoatViewModel: RaincoatViewModel = viewModel()
-
+    var gotWeather by remember { mutableStateOf(false) }
 
     NavHost(
         navController = navController,
@@ -27,10 +35,20 @@ fun Navigation() {
     ) {
         // builder
         composable(Screen.HomePage.route) {
+
+            // only call the api once
+            if (!gotWeather) {
+                raincoatViewModel.getWeatherData()
+                gotWeather = true
+            }
+
             Homepage(
                 navController,
                 user = raincoatViewModel.user,
-                setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) }
+                weather = raincoatViewModel.weatherData,
+                weatherErrorMessage = raincoatViewModel.weatherErrorMessage,
+                weatherLoading = raincoatViewModel.weatherLoading,
+                setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
             )
         } // composable screen
 

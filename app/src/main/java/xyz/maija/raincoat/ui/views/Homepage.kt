@@ -1,5 +1,6 @@
 package xyz.maija.raincoat.ui.views
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,7 +37,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.R
+import xyz.maija.raincoat.classes.Message
 import xyz.maija.raincoat.classes.User
+import xyz.maija.raincoat.classes.Weather
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
@@ -45,10 +49,18 @@ import xyz.maija.raincoat.ui.theme.RaincoatTheme
 fun Homepage(
     navController: NavController,
     user: User,
+    weather: Weather?,
+    weatherErrorMessage: String,
+    weatherLoading: Boolean,
     setPreviousScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
+    Log.d("MEP", "Homepage: loading: $weatherLoading")
+    Log.d("MEP", "Homepage: errorMesage: $weatherErrorMessage")
+    Log.d("MEP", "Homepage: weather: $weather")
+
+    // want even loading and error to align properly
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -57,35 +69,59 @@ fun Homepage(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start
-        ) {
+        if (weatherLoading) {
+            Text(text = "Loading...")
+        } else if (weatherErrorMessage != "") {
+            Text(
+                text = "Error: $weatherErrorMessage",
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.error
+            ) // error text
+        } else if (weather == null) {
+            Text(
+                text = "Something went wrong fetching the data. Try again later.",
+                fontWeight = FontWeight.Bold,
+            ) // error text
+        } else {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
 
-            GoToSettings(navController = navController, setPreviousScreen = { setPreviousScreen(it) })
-            WeatherData()
+                GoToSettings(
+                    navController = navController,
+                    location = user.location.shortname,
+                    setPreviousScreen = { setPreviousScreen(it) }
+                )
+                WeatherData(user, weather)
 
-        } // Header Text Column
+            } // Header Text Column
 
-        WeatherImage(user)
+            WeatherImage(user)
 
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-            WeatherText()
+                WeatherText(weather.message)
 
-        } // Buttons Column
+            } // Buttons Column
+        } // else not loading + no error + weather not null
+
     } // overarching column
 
-}
+} // Homepage
 
 @Composable
-fun WeatherText() {
+fun WeatherText(
+    message: Message
+) {
     Text(
         text = buildAnnotatedString {
-            append("Bring a ")
+            append("${message.beginning} ")
 
             withStyle(
                 style = SpanStyle(
@@ -93,10 +129,10 @@ fun WeatherText() {
                     fontWeight = FontWeight.Bold
                 )
             ) {
-                append("hoodie")
+                append(message.middle)
             } // blue text
 
-            append(" for the morning and evening")
+            append(" ${message.end}")
 
         }, // build Annotated String
         fontWeight = FontWeight.Normal,
@@ -110,7 +146,11 @@ fun WeatherText() {
 
 
 @Composable
-fun GoToSettings(navController: NavController, setPreviousScreen: (Screen) -> Unit) {
+fun GoToSettings(
+    navController: NavController,
+    location: String,
+    setPreviousScreen: (Screen) -> Unit
+) {
     Row (
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -126,10 +166,10 @@ fun GoToSettings(navController: NavController, setPreviousScreen: (Screen) -> Un
                     navController.navigate(Screen.SettingsPage.route) {
                         launchSingleTop = true
                     } // navcontroller.navigate
-            }
+                }
         ) // Icon
         Text(
-            text = "Sunnyvale, CA",
+            text = location,
             fontFamily = rubikFont,
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -138,19 +178,32 @@ fun GoToSettings(navController: NavController, setPreviousScreen: (Screen) -> Un
 } // GoToSettings
 
 @Composable
-fun WeatherData() {
+fun WeatherData(
+    user: User,
+    weather: Weather
+) {
     Row (
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        WeatherTemps(current = 20, low = 12, high = 30)
+        WeatherTemps(
+            current = if(user.useCelsius) weather.current else Weather.celsiusToFahrenheit(weather.current),
+            low = if(user.useCelsius) weather.min else Weather.celsiusToFahrenheit(weather.min),
+            high = if(user.useCelsius) weather.max else Weather.celsiusToFahrenheit(weather.max)
+        )
 
         Row {
-            SpecificWeatherInfoColumn(percentage = 87, label = "Humidity")
-            SpecificWeatherInfoColumn(percentage = 0, label = "Chance of\nRain")
-        }
+            SpecificWeatherInfoColumn(
+                percentage = weather.humidity,
+                label = "Humidity"
+            )
+            SpecificWeatherInfoColumn(
+                percentage = weather.rainChance,
+                label = if(weather.willSnow(user)) "Chance of\nSnow" else "Chance of\nRain"
+            )
+        } // Row for weather percentages
     } // Row
 } // Weather Data
 
@@ -236,6 +289,13 @@ fun WeatherImage(user: User) {
 fun HomepagePreview() {
     val navController = rememberNavController()
     RaincoatTheme {
-        Homepage(navController, User(), setPreviousScreen = { })
+        Homepage(
+            navController,
+            User(),
+            weather = null,
+            weatherErrorMessage = "",
+            weatherLoading = false,
+            setPreviousScreen = { },
+        )
     }
 }

@@ -2,11 +2,14 @@ package xyz.maija.raincoat.classes
 
 import android.util.Log
 import xyz.maija.apihomework.data.api.model.WeatherData
-import xyz.maija.raincoat.R
+import xyz.maija.apihomework.data.api.model.WeatherSectionData
 import xyz.maija.raincoat.utils.Temperature
 import kotlin.math.round
+import kotlin.math.roundToInt
 
+// all weather is stored and calculated in celsius
 class Weather(
+    user: User,
     messyData: WeatherData
 ) {
     var current: Int = 0
@@ -21,64 +24,58 @@ class Weather(
 
     // initializer blocks -> run code during main constructor
     init {
-        // TODO: here
-        Log.d("MEP", "Weather: Init")
-        Log.d("MEP", "Weather: feels like ${messyData.list[0].main.feelsLike}º")
-    }
+        var isFirst = true
+        for (section in messyData.list) {
+            if (isFirst) {
+                //round and cast double values to int
+                current = section.main.temp.roundToInt()
+                feelsLike = section.main.feelsLike.roundToInt()
+                min = section.main.tempMin.roundToInt()
+                max = section.main.tempMax.roundToInt()
+                humidity = section.main.humidity
+                rainChance = (section.pop * 100).roundToInt()
+                isFirst = false
+            } // is First
+            checkIfNeedsAdjusting(section)
+        } // for each weather portion put in data
 
-//    init ( weatherData: WeatherSectionsStruct, user: User ) {
-//
-//        // gets weather in celcius
-//        let thisWeather = weatherData.main
-//                // round and cast double values to int
-//                current = Int(round(thisWeather.temp))
-//        feelsLike = Int(round(thisWeather.feels_like))
-//        min = Int(round(thisWeather.temp_min))
-//        max = Int(round(thisWeather.temp_max))
-//        humidity = Int(thisWeather.humidity)
-//        rainChance = Int(round(weatherData.pop * 100))
-//        message = Message()
-//
-//        message = getTempMessage(user: user)
-//
-//
-//    } // init
+        message = getTempMessage(user)
+    } // init
 
-    // TODO: takes in weather data
-    fun checkIfNeedsAdjusting() {
-        // processes weather data
-        // swift code
-//        let tempmin = Int(round(weatherData.main.temp_min))
-//        let tempmax = Int(round(weatherData.main.temp_max))
-//        let temphumidity = Int(weatherData.main.humidity)
-//        let temprainChance = Int(round(weatherData.pop * 100))
-//
-//        if tempmin < min {
-//            min = tempmin
-//        }
-//        if tempmax > max {
-//            max = tempmax
-//        }
-//        if temphumidity > humidity {
-//            humidity = temphumidity
-//        }
-//        if temprainChance > rainChance {
-//            rainChance = temprainChance
-//        }
+    // using the later forecast data, change the predictions for the day
+    private fun checkIfNeedsAdjusting(section: WeatherSectionData) {
+
+        val tempMin = section.main.tempMin.roundToInt()
+        val tempMax = section.main.tempMax.roundToInt()
+        val tempHumidity = section.main.humidity
+        val tempRainChance = (section.pop * 100).roundToInt()
+
+        if (tempMin < min) {
+            min = tempMin
+        }
+        if (tempMax > max) {
+            max = tempMax
+        }
+        if (tempHumidity > humidity) {
+            humidity = tempHumidity
+        }
+        if (tempRainChance > rainChance) {
+            rainChance = tempRainChance
+        }
     } // checkIfNeedsAdjusting
 
     fun resetTempMessage(user: User) {
         message = getTempMessage(user)
     }
 
-    fun getTempMessage(user: User) : Message {
+    private fun getTempMessage(user: User) : Message {
 
         // prepare for the return so we can edit it throughout the function
-        var message = Message()
+        val message = Message()
         var dressForTemp: TempRange = TempRange.SCORCHING
 
         // factor in the hot/cold
-        var factored = factorTemp(user.hotcold)
+        val factored = factorTemp(user.hotcold)
         var changed = false
 
         // we do all calcs in celsius
@@ -90,7 +87,7 @@ class Weather(
             // loop through all the cases to find which ones match the min and max
             enumValues<TempRange>().forEach { range ->
                 if (TempRange.getMax(range) > factored.max && TempRange.getMin(range) <= factored.max) {
-                    // TODO: message.image = "\(range).\(user.hair)" - how to get image
+                    message.image = getWeatherImg(range = range, hair = user.hair)
                     dressForTemp = range
                 } // dress for hot
 
@@ -116,7 +113,7 @@ class Weather(
                 } // prepare for hot
 
                 if (TempRange.getMax(range) > factored.min && TempRange.getMin(range) <= factored.min) {
-                    // TODO: message.image = "\(range).\(user.hair)" - how to get image
+                    message.image = getWeatherImg(range = range, hair = user.hair)
                     dressForTemp = range
                 } // prepare for cold
 
@@ -148,8 +145,8 @@ class Weather(
 
     private fun factorTemp(hotcold: Double) : Temperature {
         // TODO: This formula is v1 and could totally be improved
-        var hotColdShift = getHotColdShift(hotcold)
-        var humidityShift = feelsLike - current // get api's feels like shift
+        val hotColdShift = getHotColdShift(hotcold)
+        val humidityShift = feelsLike - current // get api's feels like shift
 
         // hotcold only effects when it's not 50
         return Temperature(min + hotColdShift + humidityShift, max + hotColdShift + humidityShift)
@@ -162,26 +159,26 @@ class Weather(
     private fun getHotColdShift(hotcold: Double) : Int {
         // I'm using x because this is a verrryyyy long equation
         // i'm shifting hotcold so that no change (50) is at x=0 instead of x=50
-        var x = hotcold - 50
+        val x = hotcold - 50
 
         // this formula is very long and particular to shift the max of 7 degrees C and exponentially less than that for the middle
-        var part1 = -0.00002 * x * x * x
-        var part2 = 0.00000000000000001 * x * x
-        var part3 = 0.09 * x
+        val part1 = -0.00002 * x * x * x
+        val part2 = 0.00000000000000001 * x * x
+        val part3 = 0.09 * x
         return round(part1 + part2 - part3).toInt() * (-1) // flip the sign of the number because the result ended up being backwards without it
     }
 
     fun willSnow(user: User) : Boolean {
-        if (user.useCelsius) {
-            return max < 0
+        return if (user.useCelsius) {
+            max < 0
         } else {
-            return max < 32
+            max < 32
         }
     } // willSnow
 
     companion object {
         fun fahrenheitToCelsius(temp: Int) : Int {
-            return ((temp - 32) * (5/9)).toInt()
+            return ((temp - 32).toDouble() * (5/9)).toInt()
         }
 
         fun celsiusToFahrenheit(temp: Int) : Int {
