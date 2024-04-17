@@ -1,6 +1,7 @@
 package xyz.maija.raincoat.classes
 
 import android.util.Log
+import androidx.compose.ui.text.toLowerCase
 import xyz.maija.apihomework.data.api.model.WeatherData
 import xyz.maija.apihomework.data.api.model.WeatherSectionData
 import xyz.maija.raincoat.utils.Temperature
@@ -10,7 +11,7 @@ import kotlin.math.roundToInt
 // all weather is stored and calculated in celsius
 class Weather(
     user: User,
-    messyData: WeatherData
+    messyData: WeatherData,
 ) {
     var current: Int = 0
     var feelsLike: Int = 0
@@ -87,7 +88,7 @@ class Weather(
             // loop through all the cases to find which ones match the min and max
             enumValues<TempRange>().forEach { range ->
                 if (TempRange.getMax(range) > factored.max && TempRange.getMin(range) <= factored.max) {
-                    message.image = getWeatherImg(range = range, hair = user.hair)
+                    message.image = "${range}_${user.hair}"
                     dressForTemp = range
                 } // dress for hot
 
@@ -113,7 +114,7 @@ class Weather(
                 } // prepare for hot
 
                 if (TempRange.getMax(range) > factored.min && TempRange.getMin(range) <= factored.min) {
-                    message.image = getWeatherImg(range = range, hair = user.hair)
+                    message.image = "${range}_${user.hair}"
                     dressForTemp = range
                 } // prepare for cold
 
@@ -123,7 +124,7 @@ class Weather(
 
         // weird cool section
         if (!changed) {
-            // TODO: message.image = "cool.\(user.hair)" - how to get image
+            message.image = "cool_${user.hair}"
             if (humidity > 70) {
                 message.beginning = "Wear a"
                 message.middle = "t-shirt"

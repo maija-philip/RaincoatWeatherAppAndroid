@@ -44,7 +44,6 @@ class RaincoatViewModel: ViewModel() {
     val user: User
         get() = _user
 
-
     // Weather
     private var _weatherData: List<Weather> by mutableStateOf(listOf())
     val weatherData: Weather?

@@ -40,6 +40,7 @@ import xyz.maija.raincoat.R
 import xyz.maija.raincoat.classes.Message
 import xyz.maija.raincoat.classes.User
 import xyz.maija.raincoat.classes.Weather
+import xyz.maija.raincoat.classes.getWeatherImg
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
@@ -55,10 +56,6 @@ fun Homepage(
     setPreviousScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    Log.d("MEP", "Homepage: loading: $weatherLoading")
-    Log.d("MEP", "Homepage: errorMesage: $weatherErrorMessage")
-    Log.d("MEP", "Homepage: weather: $weather")
 
     // want even loading and error to align properly
     Column(
@@ -97,7 +94,7 @@ fun Homepage(
 
             } // Header Text Column
 
-            WeatherImage(user)
+            WeatherImage(user, weather.message.image)
 
             Column(
                 modifier = Modifier
@@ -271,9 +268,14 @@ fun WeatherTemps(current: Int, low: Int, high: Int) {
 
 
 @Composable
-fun WeatherImage(user: User) {
+fun WeatherImage(user: User, imageString: String) {
+    val imgId = getWeatherImg(name = imageString)
+    Log.d("MEP", "Homepage: WeatherImage: imageString: $imageString")
+    Log.d("MEP", "Homepage: WeatherImage: id: $imgId")
+    Log.d("MEP", "Homepage: WeatherImage: scorching: ${R.drawable.scorching_bald_light}")
+
     Image(
-        painter = painterResource(id = R.drawable.scorching_bald_light),
+        painter = painterResource(id = imgId),
         contentDescription = "Person wearing shorts and a tank top",
         modifier = Modifier
             .scale(1.4f)
