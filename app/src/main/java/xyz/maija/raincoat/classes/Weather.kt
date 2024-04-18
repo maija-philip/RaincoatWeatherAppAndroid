@@ -1,9 +1,8 @@
 package xyz.maija.raincoat.classes
 
-import android.util.Log
-import androidx.compose.ui.text.toLowerCase
 import xyz.maija.apihomework.data.api.model.WeatherData
 import xyz.maija.apihomework.data.api.model.WeatherSectionData
+import xyz.maija.raincoat.data.entities.User
 import xyz.maija.raincoat.utils.Temperature
 import kotlin.math.round
 import kotlin.math.roundToInt

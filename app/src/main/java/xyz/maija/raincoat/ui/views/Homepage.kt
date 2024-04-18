@@ -1,6 +1,5 @@
 package xyz.maija.raincoat.ui.views
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,9 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import xyz.maija.raincoat.R
 import xyz.maija.raincoat.classes.Message
-import xyz.maija.raincoat.classes.User
+import xyz.maija.raincoat.data.entities.User
 import xyz.maija.raincoat.classes.Weather
 import xyz.maija.raincoat.classes.getWeatherImg
 import xyz.maija.raincoat.navigation.Screen

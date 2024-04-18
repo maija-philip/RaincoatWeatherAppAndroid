@@ -41,7 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.classes.Hairstyle
 import xyz.maija.raincoat.R
-import xyz.maija.raincoat.classes.User
+import xyz.maija.raincoat.data.entities.User
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
