@@ -50,6 +50,7 @@ import xyz.maija.raincoat.ui.theme.RaincoatTheme
 @Composable
 fun WelcomeWizard1(
     navController: NavController,
+    user: User,
     setPreviousScreen: (Screen) -> Unit,
     setHairstyle: (Hairstyle) -> Unit,
     setHotCold: (Double) -> Unit,
@@ -97,11 +98,16 @@ fun WelcomeWizard1(
             textAlign = TextAlign.Center
         ) // Welcome
 
-        ChooseAHairstyle({ newVisible ->
-            visible2ndSection = newVisible
-        }, hairstyle) { newHairstyle ->
-            hairstyle = newHairstyle
-        } // ChooseAHairStyle
+        ChooseAHairstyle(
+            updateVisible2ndSection = { newVisible ->
+                visible2ndSection = newVisible
+            },
+            hairstyle = hairstyle,
+            updateHairstyle = { newHairstyle ->
+                hairstyle = newHairstyle
+            },
+            reGetWeatherMessage = {}
+        )
 
         Column(
             modifier = Modifier
@@ -127,10 +133,17 @@ fun WelcomeWizard1(
                         setHairstyle(hairstyle)
                         setHotCold(hotcold.toDouble())
                         setPreviousScreen(Screen.WelcomeWizard1)
-                        // Navigate to Welcome Wizard 2
-                        navController.navigate(Screen.WelcomeWizard2.route) {
-                            launchSingleTop = true
-                        } // navcontroller.navigate
+
+                        if (user.location == null) {
+                            navController.navigate(Screen.LocationPage.route) {
+                                launchSingleTop = true
+                            } // navcontroller.navigate
+                        } else {
+                            navController.navigate(Screen.WelcomeWizard2.route) {
+                                launchSingleTop = true
+                            } // navcontroller.navigate
+                        } // else navigate to welcome wizard 2
+
                     } // onclick
                 ) {
                     Text(
@@ -201,7 +214,8 @@ fun RunHotOrCold(hotcold: Float, updateHotCold: (Float) -> Unit, inSettings: Boo
 fun ChooseAHairstyle(
     updateVisible2ndSection: (Boolean) -> Unit,
     hairstyle: Hairstyle,
-    updateHairstyle: (Hairstyle) -> Unit
+    updateHairstyle: (Hairstyle) -> Unit,
+    reGetWeatherMessage: () -> Unit,
 ) {
 
     Column (
@@ -221,9 +235,15 @@ fun ChooseAHairstyle(
         ){
 
             // create the boxes
-            HairChoiceBox(updateVisible2ndSection, R.drawable.hair_bald, Hairstyle.BALD, hairstyle, updateHairstyle)
-            HairChoiceBox(updateVisible2ndSection, R.drawable.hair_short, Hairstyle.SHORT, hairstyle, updateHairstyle)
-            HairChoiceBox(updateVisible2ndSection, R.drawable.hair_long, Hairstyle.LONG, hairstyle, updateHairstyle)
+            HairChoiceBox(updateVisible2ndSection, R.drawable.hair_bald, Hairstyle.BALD, hairstyle, updateHairstyle, reGetWeatherMessage = {
+                reGetWeatherMessage()
+            })
+            HairChoiceBox(updateVisible2ndSection, R.drawable.hair_short, Hairstyle.SHORT, hairstyle, updateHairstyle, reGetWeatherMessage = {
+                reGetWeatherMessage()
+            })
+            HairChoiceBox(updateVisible2ndSection, R.drawable.hair_long, Hairstyle.LONG, hairstyle, updateHairstyle, reGetWeatherMessage = {
+                reGetWeatherMessage()
+            })
 
         } // Row
     } // Column
@@ -236,7 +256,8 @@ fun HairChoiceBox(
     image: Int,
     hair: Hairstyle,
     chosenStyle: Hairstyle,
-    chooseHair: (Hairstyle) -> Unit
+    chooseHair: (Hairstyle) -> Unit,
+    reGetWeatherMessage: () -> Unit,
 ) {
 
     var hasChosen by remember { mutableStateOf(false) }
@@ -253,7 +274,8 @@ fun HairChoiceBox(
             .clickable {
                 hasChosen = true
                 updateVisible2ndSection(true)
-                chooseHair(hair);
+                chooseHair(hair)
+                reGetWeatherMessage()
             }
             .border(
                 width = if (displayBorder) 6.dp else (-1).dp,
@@ -273,9 +295,10 @@ fun WelcomeWizard1Preview() {
     RaincoatTheme {
         WelcomeWizard1(
             navController = navController,
+            user = User(),
             setPreviousScreen = { },
             setHairstyle = { },
-            setHotCold = { }
+            setHotCold = { },
         )
     }
 }

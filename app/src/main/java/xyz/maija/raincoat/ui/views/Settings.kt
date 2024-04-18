@@ -47,6 +47,7 @@ fun Settings(
     setHotCold: (Double) -> Unit,
     setHairstyle: (Hairstyle) -> Unit,
     setPreviousScreen: (Screen) -> Unit,
+    reGetWeatherMessage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -78,12 +79,13 @@ fun Settings(
         ) // Welcome
 
         RunHotOrCold(hotcold = hotcold, updateHotCold = { newHotCold ->
+            reGetWeatherMessage()
             setHotCold(newHotCold.toDouble())
             hotcold = newHotCold
         }, inSettings = true)
 
         SectionHeader(text = "General")
-        SectionLink(title = "Location", data = user.location.locationName) {
+        SectionLink(title = "Location", data = user.location?.locationName ?: "No Location") {
             // onclick - navigate to location screen
             setPreviousScreen(Screen.SettingsPage)
             navController.navigate(Screen.LocationPage.route) {
@@ -117,7 +119,8 @@ fun Settings(
                         updateHairstyle = { newHair ->
                             hair = newHair
                             setHairstyle(newHair)
-                        }
+                        },
+                        reGetWeatherMessage = { reGetWeatherMessage() }
                     ) // chose a hairstyle
                 }
 
@@ -190,7 +193,8 @@ fun SettingsPreview() {
             user = User(),
             setHotCold = { },
             setHairstyle = { },
-            setPreviousScreen = { }
+            setPreviousScreen = { },
+            reGetWeatherMessage = { }
         )
     }
 }

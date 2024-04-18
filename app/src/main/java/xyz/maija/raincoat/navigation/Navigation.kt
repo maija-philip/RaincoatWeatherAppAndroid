@@ -27,7 +27,6 @@ fun Navigation() {
 
     val navController = rememberNavController() // navigation controller state
     val raincoatViewModel: RaincoatViewModel = viewModel()
-    var gotWeather by remember { mutableStateOf(false) }
 
     NavHost(
         navController = navController,
@@ -37,9 +36,9 @@ fun Navigation() {
         composable(Screen.HomePage.route) {
 
             // only call the api once
-            if (!gotWeather) {
+            if (!raincoatViewModel.gotWeather) {
                 raincoatViewModel.getWeatherData()
-                gotWeather = true
+                raincoatViewModel.setGotWeather(true)
             }
 
             Homepage(
@@ -48,6 +47,7 @@ fun Navigation() {
                 weather = raincoatViewModel.weatherData,
                 weatherErrorMessage = raincoatViewModel.weatherErrorMessage,
                 weatherLoading = raincoatViewModel.weatherLoading,
+                locationErrorMessage = raincoatViewModel.geoLocationErrorMessage,
                 setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
             )
         } // composable screen
@@ -55,6 +55,7 @@ fun Navigation() {
         composable(Screen.WelcomeWizard1.route) {
             WelcomeWizard1(
                 navController,
+                user = raincoatViewModel.user,
                 setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
                 setHairstyle = { raincoatViewModel.setHair(it) },
                 setHotCold = { raincoatViewModel.setHotCold(it) }
@@ -77,6 +78,7 @@ fun Navigation() {
                 setHotCold = { raincoatViewModel.setHotCold(it) },
                 setHairstyle = { raincoatViewModel.setHair(it) },
                 setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
+                reGetWeatherMessage = { raincoatViewModel.weatherData?.resetTempMessage(raincoatViewModel.user) }
             )
         } // composable screen
 
@@ -84,8 +86,9 @@ fun Navigation() {
             LocationScreen(
                 navController,
                 previousScreen = raincoatViewModel.previousScreen,
+                setGotWeather = { raincoatViewModel.setGotWeather(it) },
                 setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
-                setLocation = { raincoatViewModel.setLocation(it) }
+                getLocationData = { postalCode, country -> raincoatViewModel.getLocationData(postalCode, country) }
             )
         } // composable screen
 

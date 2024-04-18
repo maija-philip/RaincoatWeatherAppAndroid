@@ -3,6 +3,7 @@ package xyz.maija.raincoat.data.api.model
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
@@ -44,6 +45,10 @@ class RaincoatViewModel: ViewModel() {
     val user: User
         get() = _user
 
+    private var _gotWeather by mutableStateOf(false)
+    val gotWeather: Boolean
+        get() = _gotWeather
+
     // Weather
     private var _weatherData: List<Weather> by mutableStateOf(listOf())
     val weatherData: Weather?
@@ -74,6 +79,8 @@ class RaincoatViewModel: ViewModel() {
     fun setLocation(location: Location) { _user.location = location }
     fun setUseCelsius(useCelsius: Boolean) { _user.useCelsius = useCelsius }
 
+    fun setGotWeather(newGotWeather: Boolean) { _gotWeather = newGotWeather }
+
     fun getWeatherData() {
         viewModelScope.launch {
             weatherLoading = true
@@ -82,8 +89,8 @@ class RaincoatViewModel: ViewModel() {
             try {
                 val apiServiceWeather = APIServiceWeather.getInstance()
                 val weatherDataMessy = apiServiceWeather.getWeatherData(
-                    lat = "${user.location.latitude ?: 0}",
-                    lon = "${user.location.longitude ?: 0}",
+                    lat = "${user.location?.latitude ?: 0}",
+                    lon = "${user.location?.longitude ?: 0}",
                     units = "metric",
                     cnt = "8",
                     appid = Globals.API_KEY
@@ -100,21 +107,30 @@ class RaincoatViewModel: ViewModel() {
         } // launch coroutine
     } // getWeatherData
 
-    fun getLocationData(postalCode: String, countryCode: String, useCelsius: Boolean) {
+    fun getLocationData(postalCode: String, countryCode: String) {
         viewModelScope.launch {
             geoLocationLoading = true
 
             // get the geolocation data so that we have the lat, lon
             try {
                 val apiServiceLocation = APIServiceLocation.getInstance()
-                _geoLocationData = listOf(apiServiceLocation.getGeolocationData(
+                val locationData = apiServiceLocation.getGeolocationData(
                     zip = "$postalCode,$countryCode",
-                    appid = Globals.API_KEY))
+                    appid = Globals.API_KEY)
+                _geoLocationData = listOf(locationData)
+                val location: Location = Location(
+                    locationName = "${locationData.name}, ${locationData.country}",
+                    shortname = "${locationData.name}, ${locationData.country}",
+                    latitude = locationData.lat,
+                    longitude = locationData.lon
+                )
+                user.location = location
                 geoLocationLoading = false
 
             } catch (e: Exception) {
                 geoLocationErrorMessage = e.message.toString()
                 geoLocationLoading = false
+                Log.d("MEP", "getLocationData: GeoLocationError")
             } // catch
 
 

@@ -7,7 +7,7 @@ class User {
     var hair: Hairstyle = Hairstyle.BALD
     var hotcold: Double = 50.0 // from 0 to 100
     var skincolor: Color = DEFAULT_SKIN_COLOR
-    var location: Location = Location()
+    var location: Location? = null
     var useCelsius: Boolean = true
 
     companion object {

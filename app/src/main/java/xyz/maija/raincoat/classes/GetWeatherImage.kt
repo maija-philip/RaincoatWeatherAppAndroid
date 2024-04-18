@@ -11,8 +11,6 @@ import xyz.maija.raincoat.R
 fun getWeatherImg(name: String): Int {
     val isDarkMode = isSystemInDarkTheme()
 
-    Log.d("MEP", "getWeatherImg: we got here")
-
     when (name.lowercase()) {
         "cold_bald" -> return if(isDarkMode) R.drawable.cold_bald_dark else R.drawable.cold_bald_light
         "cold_long" -> return if(isDarkMode) R.drawable.cold_long_dark else R.drawable.cold_long_light

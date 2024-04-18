@@ -53,9 +53,12 @@ fun Homepage(
     weather: Weather?,
     weatherErrorMessage: String,
     weatherLoading: Boolean,
+    locationErrorMessage: String,
     setPreviousScreen: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    var shouldShowWeatherData = true
 
     // want even loading and error to align properly
     Column(
@@ -66,33 +69,53 @@ fun Homepage(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.Start
+        ) {
+
+            GoToSettings(
+                navController = navController,
+                location = user.location?.shortname ?: "No Location",
+                setPreviousScreen = { setPreviousScreen(it) }
+            )
+            if (shouldShowWeatherData && weather != null) {
+                WeatherData(user, weather)
+            }
+        } // Header Text Column
+
+        // check to see whether to display error or data
         if (weatherLoading) {
+            shouldShowWeatherData = false
             Text(text = "Loading...")
         } else if (weatherErrorMessage != "") {
+            shouldShowWeatherData = false
             Text(
                 text = "Error: $weatherErrorMessage",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.error
             ) // error text
+        }
+        else if (locationErrorMessage != "") {
+            shouldShowWeatherData = false
+            Text(
+                text = "Error: $locationErrorMessage",
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.error
+            ) // error text
         } else if (weather == null) {
+            shouldShowWeatherData = false
             Text(
                 text = "Something went wrong fetching the data. Try again later.",
                 fontWeight = FontWeight.Bold,
             ) // error text
+        } else if (user.location == null) {
+            shouldShowWeatherData = false
+            Text(
+                text = "No Location Info",
+                fontWeight = FontWeight.Bold,
+            ) // error text
         } else {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.Start
-            ) {
-
-                GoToSettings(
-                    navController = navController,
-                    location = user.location.shortname,
-                    setPreviousScreen = { setPreviousScreen(it) }
-                )
-                WeatherData(user, weather)
-
-            } // Header Text Column
 
             WeatherImage(user, weather.message.image)
 
@@ -149,6 +172,7 @@ fun GoToSettings(
     setPreviousScreen: (Screen) -> Unit
 ) {
     Row (
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ){
         Icon(
@@ -270,9 +294,6 @@ fun WeatherTemps(current: Int, low: Int, high: Int) {
 @Composable
 fun WeatherImage(user: User, imageString: String) {
     val imgId = getWeatherImg(name = imageString)
-    Log.d("MEP", "Homepage: WeatherImage: imageString: $imageString")
-    Log.d("MEP", "Homepage: WeatherImage: id: $imgId")
-    Log.d("MEP", "Homepage: WeatherImage: scorching: ${R.drawable.scorching_bald_light}")
 
     Image(
         painter = painterResource(id = imgId),
@@ -297,6 +318,7 @@ fun HomepagePreview() {
             weather = null,
             weatherErrorMessage = "",
             weatherLoading = false,
+            locationErrorMessage = "",
             setPreviousScreen = { },
         )
     }

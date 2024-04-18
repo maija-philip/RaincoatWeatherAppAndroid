@@ -1,11 +1,7 @@
 package xyz.maija.raincoat.ui.views
 
-import android.widget.Spinner
-import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,22 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -41,8 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -56,24 +38,26 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import xyz.maija.raincoat.classes.Location
-import xyz.maija.raincoat.data.Countries
 import xyz.maija.raincoat.data.Country
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
-
 @Composable
 fun LocationScreen(
     navController: NavController,
     previousScreen: Screen,
+    setGotWeather: (Boolean) -> Unit,
     setPreviousScreen: (Screen) -> Unit,
-    setLocation: (Location) -> Unit,
+    getLocationData: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     var chosenCountry by remember { mutableStateOf(Country("--", "--")) }
     var enteredLocationState by remember { mutableStateOf("") }
+    var isError by remember {
+        mutableStateOf(false)
+    }
 
     Column(
         modifier = modifier
@@ -101,6 +85,16 @@ fun LocationScreen(
             modifier = Modifier.padding(horizontal = 32.dp)
         )
 
+        if (isError) {
+            Text(
+                text = "Please fill out all fields",
+                fontFamily = rubikFont,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+
         Spacer(modifier = Modifier.height(10.dp))
 
         CountryDropDown(chosenCountry) {
@@ -116,72 +110,17 @@ fun LocationScreen(
 
         SaveButton(
             navController = navController,
-            location = Location(),
             previousScreen = previousScreen,
             setPreviousScreen = { setPreviousScreen(it) },
-            setLocation = { setLocation(it) }
+            setIsError = { isError = it },
+            chosenCountry = chosenCountry,
+            enteredPostalCode = enteredLocationState,
+            getLocationData = { postalCode, country -> getLocationData(postalCode, country)},
+            setGotWeather = { setGotWeather(it) }
         ) // save button
 
     } // overarching column
 } // Settings
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-// used this resource https://alexzh.com/jetpack-compose-dropdownmenu/
-// and this https://stackoverflow.com/questions/77336149/dropdown-menu-in-compose-overlaps-system-keyboard
-fun CountryDropDown(chosenCountry: Country, updateChosenCountry: (Country) -> Unit) {
-
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = Modifier
-            .padding(32.dp)
-            .clip(RoundedCornerShape(50.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(horizontal = 8.dp),
-    ) {
-        TextField(
-            value = chosenCountry.name,
-            onValueChange = {
-                // todo:
-            },
-            label = { Text(text = "Choose a country") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            readOnly = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                cursorColor = MaterialTheme.colorScheme.primary,
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor()
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(50.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(horizontal = 8.dp),
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.exposedDropdownSize(),
-        ) {
-            Countries.list.forEach { country ->
-                DropdownMenuItem(
-                    text = { Text(text = country.name) },
-                    onClick = {
-                        updateChosenCountry(country)
-                        expanded = false
-                    } // onclick
-                ) // dropdown menu item
-            } // for each country
-        } // exposed dropdown menu
-    } // Exposed dropdown menu box
-
-} // CountryDropDown
 
 @Composable
 fun RoundedTextBox(hint: String, entered: String, action: (String) -> Unit) {
@@ -227,10 +166,13 @@ fun RoundedTextBox(hint: String, entered: String, action: (String) -> Unit) {
 @Composable
 fun SaveButton(
     navController: NavController,
-    location: Location,
     previousScreen: Screen,
     setPreviousScreen: (Screen) -> Unit,
-    setLocation: (Location) -> Unit,
+    setIsError: (Boolean) -> Unit,
+    chosenCountry: Country,
+    enteredPostalCode: String,
+    getLocationData: (String, String) -> Unit,
+    setGotWeather: (Boolean) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -243,8 +185,14 @@ fun SaveButton(
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),
             onClick = {
-                // val tempPrevScreen = previousScreen don't think i need this bc i'm not getting a changed version of previous screen
-                setLocation(location)
+
+                // if all the feilds aren't there return
+                if (chosenCountry.name == "--" || chosenCountry.code == "--" || enteredPostalCode.trim() == "") {
+                    setIsError(true)
+                    return@Button
+                }
+
+                getLocationData(enteredPostalCode, chosenCountry.code)
                 setPreviousScreen(Screen.LocationPage)
 
                 // check to see if we go on to welcome wizard 2 or back to settings
@@ -253,6 +201,8 @@ fun SaveButton(
                         launchSingleTop = true
                     } // navcontroller.navigate
                 } else {
+                    // re-get the weather data
+                    setGotWeather(false)
                     // go back to settings
                     navController.popBackStack()
                 }
@@ -272,8 +222,9 @@ fun LocationPreview() {
         LocationScreen(
             navController,
             previousScreen = Screen.HomePage,
+            setGotWeather = { },
             setPreviousScreen = { },
-            setLocation = { }
+            getLocationData = { country, postalCode -> }
         )
     }
 }
