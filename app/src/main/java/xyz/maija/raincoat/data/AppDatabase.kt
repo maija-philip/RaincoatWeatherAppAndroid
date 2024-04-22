@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import xyz.maija.raincoat.data.dao.UserDao
+import xyz.maija.raincoat.data.entities.Converters
 import xyz.maija.raincoat.data.entities.User
 
 @Database(entities = [User::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase:RoomDatabase() {
 
     // dif functions for each entity

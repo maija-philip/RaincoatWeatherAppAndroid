@@ -1,12 +1,15 @@
 package xyz.maija.raincoat.data.api.model
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import xyz.maija.apihomework.data.api.model.GeoLocationData
 import xyz.maija.raincoat.classes.Hairstyle
@@ -15,6 +18,7 @@ import xyz.maija.raincoat.data.entities.User
 import xyz.maija.raincoat.classes.Weather
 import xyz.maija.raincoat.data.api.APIServiceLocation
 import xyz.maija.raincoat.data.api.APIServiceWeather
+import xyz.maija.raincoat.data.repositories.UserRepository
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.Globals
 
@@ -28,7 +32,7 @@ import xyz.maija.raincoat.utils.Globals
     - pass on data that they need + func, don't pass the view model
 
  */
-class RaincoatViewModel: ViewModel() {
+class RaincoatViewModel(appObj: Application): AndroidViewModel(appObj) {
 
     // properties
     private var _previousScreen: Screen by mutableStateOf(Screen.HomePage)
@@ -61,8 +65,16 @@ class RaincoatViewModel: ViewModel() {
     var geoLocationErrorMessage: String by mutableStateOf("")
     var geoLocationLoading: Boolean by mutableStateOf(false)
 
+    // room - local storage
+    private val userRepository: UserRepository = UserRepository(appObj)
+    private var _userList = fetchAllUser()
+    val userList: Flow<List<User>>
+        get() = _userList
 
-    // changer methods
+
+
+
+    // methods
     fun setPreviousScreen(newScreen: Screen) {
         _previousScreen = newScreen
     }
@@ -76,6 +88,7 @@ class RaincoatViewModel: ViewModel() {
     fun setSkinColor(skinColor: Color) { _user.skincolor = skinColor }
     fun setLocation(location: Location) { _user.location = location }
     fun setUseCelsius(useCelsius: Boolean) { _user.useCelsius = useCelsius }
+    fun setUser(newUser: User) { _user = newUser }
 
     fun setGotWeather(newGotWeather: Boolean) { _gotWeather = newGotWeather }
 
@@ -133,6 +146,22 @@ class RaincoatViewModel: ViewModel() {
 
 
         } // launch coroutine
-    }
+    } // getLocationData
+
+
+    // room - local storage
+    fun fetchAllUser(): Flow<List<User>> = userRepository.readAllCustomers()
+
+    fun insertCustomer(user: User) {
+        viewModelScope.launch {
+            userRepository.insertCustomer(user)
+        }
+    } // insertCustomer
+
+    fun deleteCustomer() {
+        viewModelScope.launch {
+            userRepository.deleteCustomer()
+        }
+    } // deleteCustomer
 
 } // RaincoatViewModel

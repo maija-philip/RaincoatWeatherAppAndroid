@@ -1,6 +1,8 @@
 package xyz.maija.raincoat.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,9 +21,23 @@ fun Navigation() {
     val navController = rememberNavController() // navigation controller state
     val raincoatViewModel: RaincoatViewModel = viewModel()
 
+    var initialScreen: String = Screen.HomePage.route
+    val userListFromStorage = raincoatViewModel.userList.collectAsState(initial = emptyList())
+
+    // switch to Welcome Wizard if there is no stored data (means they are a new user)
+    // else put the data in the view model
+    if (userListFromStorage.value.isEmpty()) {
+        Log.d("MEP", "Navigation: User List is Empty")
+        initialScreen = Screen.WelcomeWizard1.route
+    } else {
+        Log.d("MEP", "Navigation: User List is not Empty")
+        val firstItem = userListFromStorage.value[0]
+        raincoatViewModel.setUser(firstItem)
+    }
+
     NavHost(
         navController = navController,
-        startDestination = Screen.WelcomeWizard1.route, // TODO: homepage or welcome wizard based on data
+        startDestination = initialScreen,
     ) {
         // builder
         composable(Screen.HomePage.route) {
@@ -86,26 +102,3 @@ fun Navigation() {
     } // NavHost
 
 } // Navigation
-
-
-/*
-
-    List of Screens
-    - Welcome Wizard 1
-        - isLocationNextScreen? // i don't think this is needed (if we have location, do next wizard screen, otherwise location
-        - location?
-    - Welcome Wizard 2
-        - isWelcomeWizard: Bool
-        - welcomeUser?
-        - location?
-    - Homepage
-    - Settings
-        - hotCold: Double
-        - useCelsius: Bool
-        - hairstyle: hairstyle?
-        - wentToSettingsReload: Bool -> gonna ignore this one for now
-    - Location
-        - fromSettings: Bool
-        - welcomeUser?:
-
- */
