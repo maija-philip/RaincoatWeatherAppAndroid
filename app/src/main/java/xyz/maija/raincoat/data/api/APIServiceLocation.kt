@@ -12,6 +12,9 @@ import xyz.maija.apihomework.data.api.model.WeatherData
 // documentation for api https://openweathermap.org/api/geocoding-api
 const val BASE_URL_GEOLOCATION = "https://api.openweathermap.org/geo/1.0/" //?zip=E14,GB&appid=9ec235daafa8f93bad9066f04ac55f07
 
+/*
+    Facilitates getting the Geolocation Data from the api, with logging included to show what is happening.
+ */
 interface APIServiceLocation {
 
     @GET("zip")

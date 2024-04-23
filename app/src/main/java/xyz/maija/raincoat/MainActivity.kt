@@ -11,6 +11,9 @@ import xyz.maija.raincoat.navigation.Navigation
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
+/*
+    Set up the app and display the Navigation which shows which screen we are currently on
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +26,6 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     Navigation()
-                    // Location()
 
                 } // Surface
             } // Raincoat Theme

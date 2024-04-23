@@ -3,6 +3,9 @@ package xyz.maija.apihomework.data.api.model
 
 import com.google.gson.annotations.SerializedName
 
+/*
+    All the data you get back about the zip code and country given to the Geolocation API
+ */
 data class GeoLocationData(
     @SerializedName("country")
     val country: String,

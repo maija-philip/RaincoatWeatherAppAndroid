@@ -3,6 +3,9 @@ package xyz.maija.apihomework.data.api.model
 
 import com.google.gson.annotations.SerializedName
 
+/*
+    This is all the data about the weather in a particular 3hr section returned in a list from the Weather API
+ */
 data class WeatherSectionData (
     @SerializedName("clouds")
     val clouds: Clouds,

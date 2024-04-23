@@ -8,7 +8,9 @@ import java.io.File
 
 // https://fvilarino.medium.com/using-activity-result-contracts-in-jetpack-compose-14b179fb87de
 
-// use image from picker and get image uri
+/*
+    Get the URI of an image taken from the camera
+ */
 class ComposeFileProvider: FileProvider(
     R.xml.filepaths
 ) {

@@ -9,6 +9,9 @@ import xyz.maija.raincoat.data.dao.UserDao
 import xyz.maija.raincoat.data.entities.Converters
 import xyz.maija.raincoat.data.entities.User
 
+/*
+    Uses room to connect with the database in order to store and retrieve user information
+ */
 @Database(entities = [User::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase:RoomDatabase() {

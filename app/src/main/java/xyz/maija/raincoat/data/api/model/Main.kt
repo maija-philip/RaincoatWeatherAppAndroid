@@ -3,6 +3,9 @@ package xyz.maija.apihomework.data.api.model
 
 import com.google.gson.annotations.SerializedName
 
+/*
+    The most common weather information you might need from a time segment returned in the Weather API
+ */
 data class Main(
     @SerializedName("feels_like")
     val feelsLike: Double,

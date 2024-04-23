@@ -7,7 +7,10 @@ import xyz.maija.raincoat.utils.Temperature
 import kotlin.math.round
 import kotlin.math.roundToInt
 
-// all weather is stored and calculated in celsius
+/*
+    Store weather data and run calculations to determine the message that tells the user what weather to prepare for during the day.
+    All the calculations are done in celsius and all the data is stored in celsius
+ */
 class Weather(
     user: User,
     messyData: WeatherData,

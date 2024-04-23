@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,6 +45,7 @@ fun Settings(
     user: User,
     setHotCold: (Double) -> Unit,
     setHairstyle: (Hairstyle) -> Unit,
+    setUseCelsius: (Boolean) -> Unit,
     setPreviousScreen: (Screen) -> Unit,
     reGetWeatherMessage: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,6 +56,7 @@ fun Settings(
     // Declare State Variables
     var hotcold by remember { mutableFloatStateOf(user.hotcold.toFloat()) }
     var hair by remember { mutableStateOf(user.hair) }
+    var useCelsius by remember { mutableStateOf(user.useCelsius) }
     var showBottomSheet by remember { mutableStateOf(false) }
 
     // UI
@@ -91,6 +94,27 @@ fun Settings(
             } // navcontroller.navigate
         }
 
+        // TODO see if looks right + works
+        // toggle for useCelsius
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Use Celsius",
+                fontFamily = rubikFont,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            ) // title
+
+            Switch(
+                checked = useCelsius,
+                onCheckedChange = {
+                    setUseCelsius(!useCelsius)
+                    useCelsius = !useCelsius
+                }
+            ) // Switch
+        }
+
         SectionHeader(text = "Looks")
         // SectionLink(title = "Theme", data = "Blue")
         SectionLink(title = "Hair", data = hair.toString().lowercase()) {
@@ -125,6 +149,8 @@ fun Settings(
             } // ModalBottomSheet
         } // show Bottom Sheet
 
+
+        // TODO add get current location button
 
     } // overarching column
 } // Settings
@@ -191,6 +217,7 @@ fun SettingsPreview() {
             user = User(),
             setHotCold = { },
             setHairstyle = { },
+            setUseCelsius = { },
             setPreviousScreen = { },
             reGetWeatherMessage = { }
         )

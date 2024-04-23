@@ -1,5 +1,9 @@
 package xyz.maija.raincoat.classes
 
+/*
+    Keep track of the user's currently selected Location,
+    aka where we should get the API weather data for
+ */
 data class Location(
     var locationName: String = "Sunnyvale, CA",
     var shortname: String = "Sunnyvale, CA",

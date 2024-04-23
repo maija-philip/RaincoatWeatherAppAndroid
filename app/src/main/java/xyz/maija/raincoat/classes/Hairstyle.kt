@@ -1,5 +1,8 @@
 package xyz.maija.raincoat.classes
 
+/*
+    Keep track of hairstyle options
+ */
 enum class Hairstyle(val value: Int) {
     BALD(0),
     SHORT(1),

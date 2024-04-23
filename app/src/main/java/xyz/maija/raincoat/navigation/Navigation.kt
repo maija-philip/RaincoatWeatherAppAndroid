@@ -84,6 +84,7 @@ fun Navigation() {
                 user = raincoatViewModel.user,
                 setHotCold = { raincoatViewModel.setHotCold(it) },
                 setHairstyle = { raincoatViewModel.setHair(it) },
+                setUseCelsius = { raincoatViewModel.setUseCelsius(it) },
                 setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
                 reGetWeatherMessage = { raincoatViewModel.weatherData?.resetTempMessage(raincoatViewModel.user) }
             )

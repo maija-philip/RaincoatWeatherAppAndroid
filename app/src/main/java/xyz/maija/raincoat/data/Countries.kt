@@ -2,6 +2,9 @@ package xyz.maija.raincoat.data
 
 import xyz.maija.raincoat.navigation.Screen
 
+/*
+    Keeps track of the name and ISO-Country code needed by the Geocoding API
+ */
 data class Country(val name: String, val code: String)
 
 
@@ -22,6 +25,10 @@ data class Country(val name: String, val code: String)
     fs.writeFile("result.txt", result, "utf8", () => {
         console.log("created: result.json");
     });
+ */
+
+/*
+    Keeps track of all the possible countries you can search for when searching for a location in views/Location
  */
 class Countries {
     companion object {

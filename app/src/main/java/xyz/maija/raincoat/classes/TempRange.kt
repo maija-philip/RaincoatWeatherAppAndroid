@@ -1,5 +1,8 @@
 package xyz.maija.raincoat.classes
 
+/*
+    Groups weather into ranges that match an image, set of temperatures as well as a garment
+ */
 enum class TempRange {
     SCORCHING,
     HOT,
@@ -13,6 +16,7 @@ enum class TempRange {
     companion object {
 
         // inclusive
+        // get the minimum temperature of the range
         fun getMin(tempRange: TempRange): Int {
             return when (tempRange) {
                 SCORCHING -> 32
@@ -27,6 +31,7 @@ enum class TempRange {
         } // getMin
 
         // not inclusive
+        // get the maximum temperature of the range
         fun getMax(tempRange: TempRange): Int {
             return when (tempRange) {
                 SCORCHING -> 100

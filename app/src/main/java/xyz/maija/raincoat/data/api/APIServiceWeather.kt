@@ -12,6 +12,9 @@ import xyz.maija.apihomework.data.api.model.WeatherData
 // documentation for api https://openweathermap.org/forecast5
 const val BASE_URL_WEATHER = "https://api.openweathermap.org/data/2.5/" //?lat=44.34&lon=10.99&units=metric&count=8&appid=9ec235daafa8f93bad9066f04ac55f07
 
+/*
+    Facilitates getting the Weather Data from the api, with logging included to show what is happening
+ */
 interface APIServiceWeather {
 
     @GET("forecast")

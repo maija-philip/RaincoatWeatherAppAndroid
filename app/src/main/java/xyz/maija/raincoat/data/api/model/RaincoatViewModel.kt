@@ -24,13 +24,7 @@ import xyz.maija.raincoat.utils.Globals
 
 // can only have one ViewModel per app
 /*
-    Best Practices
-    - private variables with _
-    - public computed that gets the private
-    - methods that update private one
-    - use as high up as possible
-    - pass on data that they need + func, don't pass the view model
-
+    Keeps track of data the whole app needs, methods and properties are given out to the views on an as needed basis. Stores a local user variable as well as api data, navigation information, and database user data.
  */
 class RaincoatViewModel(appObj: Application): AndroidViewModel(appObj) {
 

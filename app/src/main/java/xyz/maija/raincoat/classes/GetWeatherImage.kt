@@ -6,7 +6,10 @@ import androidx.compose.runtime.Composable
 import xyz.maija.raincoat.R
 
 // TODO: I thing there is probably a better way to implement this, but I haven't found out how
-// I need to turn temperature section, hair, and color into the res drawable images
+
+/*
+    Turn the temperature section and hair string into a R.drawable image depending on whether the UI is in light or dark mode.
+ */
 @Composable
 fun getWeatherImg(name: String): Int {
     val isDarkMode = isSystemInDarkTheme()

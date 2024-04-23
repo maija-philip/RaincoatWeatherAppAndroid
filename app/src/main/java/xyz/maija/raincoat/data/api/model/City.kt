@@ -3,6 +3,9 @@ package xyz.maija.apihomework.data.api.model
 
 import com.google.gson.annotations.SerializedName
 
+/*
+    City object retrieved from the Weather api with information about the city, including name and coordinates
+ */
 data class City(
     @SerializedName("coord")
     val coord: Coord,
