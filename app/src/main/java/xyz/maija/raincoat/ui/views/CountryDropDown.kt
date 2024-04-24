@@ -83,8 +83,6 @@ fun CountryDropDown(chosenCountry: Country, updateChosenCountry: (Country) -> Un
             filteredSuggestions = Countries.list.filter { country -> country.name.contains(textFieldValue.text, ignoreCase = true) }
         }
 
-        Log.d("MEP", "text: $textFieldValue")
-        Log.d("MEP", "SearchableCountryDropdown: ${filteredSuggestions}")
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },

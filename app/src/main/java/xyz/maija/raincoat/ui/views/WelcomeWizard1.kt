@@ -1,5 +1,6 @@
 package xyz.maija.raincoat.ui.views
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -133,6 +134,8 @@ fun WelcomeWizard1(
                         setHairstyle(hairstyle)
                         setHotCold(hotcold.toDouble())
                         setPreviousScreen(Screen.WelcomeWizard1)
+
+                        Log.d("MEP", "WelcomeWizard1: user.location? ${user.location}")
 
                         if (user.location == null) {
                             navController.navigate(Screen.LocationPage.route) {

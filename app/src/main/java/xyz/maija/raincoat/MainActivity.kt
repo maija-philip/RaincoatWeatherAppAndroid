@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import xyz.maija.raincoat.navigation.Navigation
+import xyz.maija.raincoat.navigation.Router
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.surface
                 ) {
 
-                    Navigation()
+                    Router()
 
                 } // Surface
             } // Raincoat Theme

@@ -3,6 +3,10 @@ package xyz.maija.raincoat.navigation
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,24 +20,9 @@ import xyz.maija.raincoat.ui.views.WelcomeWizard2
 
 
 @Composable
-fun Navigation() {
+fun Navigation(initialScreen: String, raincoatViewModel: RaincoatViewModel) {
 
     val navController = rememberNavController() // navigation controller state
-    val raincoatViewModel: RaincoatViewModel = viewModel()
-
-    var initialScreen: String = Screen.HomePage.route
-    val userListFromStorage = raincoatViewModel.userList.collectAsState(initial = emptyList())
-
-    // switch to Welcome Wizard if there is no stored data (means they are a new user)
-    // else put the data in the view model
-    if (userListFromStorage.value.isEmpty()) {
-        Log.d("MEP", "Navigation: User List is Empty")
-        initialScreen = Screen.WelcomeWizard1.route
-    } else {
-        Log.d("MEP", "Navigation: User List is not Empty")
-        val firstItem = userListFromStorage.value[0]
-        raincoatViewModel.setUser(firstItem)
-    }
 
     NavHost(
         navController = navController,

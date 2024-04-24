@@ -77,11 +77,27 @@ class RaincoatViewModel(appObj: Application): AndroidViewModel(appObj) {
         _hasUserLocation = value
     }
 
-    fun setHair(hair: Hairstyle) { user.hair = hair }
-    fun setHotCold(hotcold: Double) { _user.hotcold = hotcold }
-    fun setSkinColor(skinColor: Color) { _user.skincolor = skinColor }
-    fun setLocation(location: Location) { _user.location = location }
-    fun setUseCelsius(useCelsius: Boolean) { _user.useCelsius = useCelsius }
+    fun setHair(hair: Hairstyle) {
+        _user.hair = hair
+        updateCustomerInDB(_user)
+    }
+    fun setHotCold(hotcold: Double) {
+        _user.hotcold = hotcold
+        updateCustomerInDB(_user)
+    }
+    fun setSkinColor(skinColor: Color) {
+        _user.skincolor = skinColor
+        updateCustomerInDB(_user)
+    }
+    fun setLocation(location: Location) {
+        _user.location = location
+        updateCustomerInDB(_user)
+    }
+    fun setUseCelsius(useCelsius: Boolean) {
+        _user.useCelsius = useCelsius
+        updateCustomerInDB(_user)
+    }
+    // used when getting user from db so it doesn't add it to db until it is changed
     fun setUser(newUser: User) { _user = newUser }
 
     fun setGotWeather(newGotWeather: Boolean) { _gotWeather = newGotWeather }
@@ -146,13 +162,17 @@ class RaincoatViewModel(appObj: Application): AndroidViewModel(appObj) {
     // room - local storage
     fun fetchAllUser(): Flow<List<User>> = userRepository.readAllCustomers()
 
-    fun insertCustomer(user: User) {
+    private fun updateCustomerInDB(user: User) {
+        deleteCustomer()
+        insertCustomer(user)
+    }
+    private fun insertCustomer(user: User) {
         viewModelScope.launch {
             userRepository.insertCustomer(user)
         }
     } // insertCustomer
 
-    fun deleteCustomer() {
+    private fun deleteCustomer() {
         viewModelScope.launch {
             userRepository.deleteCustomer()
         }
