@@ -1,5 +1,6 @@
 package xyz.maija.raincoat.ui.views
 
+import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,12 +32,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import xyz.maija.raincoat.R
+import xyz.maija.raincoat.classes.AskForPermission
 import xyz.maija.raincoat.data.entities.User
 import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
+// TODO: camera not working
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun WelcomeWizard2(
     navController: NavController,
@@ -47,6 +56,15 @@ fun WelcomeWizard2(
 ) {
 
     var skinColor by remember { mutableStateOf(User.DEFAULT_SKIN_COLOR) }
+    val context = LocalContext.current
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+    AskForPermission(
+        permission = Manifest.permission.CAMERA,
+        permissionName = "Camera",
+        permissionState = cameraPermissionState,
+        reason = "Raincoat needs your camera permission in order let you take a picture to get your average skin color. If you deny you will be prompted to pick a photo instead.",
+        context = context
+    )
 
     fun navigateToNextScreen() {
         // val tempPrevScreen = previousScreen don't think i need this bc i'm not getting a changed version of prevscreen
@@ -127,7 +145,7 @@ fun WelcomeWizard2(
                 setAvgColor = { newColor ->
                   skinColor = newColor
                 },
-                usesCamera = false, // TODO: check permissions
+                usesCamera = cameraPermissionState.status.isGranted,
                 isSecondary = skinColor != User.DEFAULT_SKIN_COLOR
             )
             if (skinColor == User.DEFAULT_SKIN_COLOR ) {

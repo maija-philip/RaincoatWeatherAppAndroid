@@ -15,4 +15,5 @@ val rubikFont = FontFamily(
     Font(R.font.rubik_light, FontWeight.Light),
 )
 
-data class Temperature (val min: Int, val max: Int);
+data class Temperature (val min: Int, val max: Int)
+data class LocationDetails (var longitude: String, var latitude: String)

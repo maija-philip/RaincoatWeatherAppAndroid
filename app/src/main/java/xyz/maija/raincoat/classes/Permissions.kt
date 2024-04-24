@@ -13,6 +13,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
@@ -22,10 +23,9 @@ import com.google.accompanist.permissions.shouldShowRationale
 fun AskForPermission(
     permission: String,
     permissionName: String,
+    permissionState: PermissionState,
     reason: String, context: Context
 ) {
-
-    val permissionState = rememberPermissionState(permission)
 
     if (permissionState.status.isGranted) {
         // use camera
