@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -49,6 +52,7 @@ fun Settings(
     setUseCelsius: (Boolean) -> Unit,
     setPreviousScreen: (Screen) -> Unit,
     reGetWeatherMessage: () -> Unit,
+    updateCustomerInDB: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -66,76 +70,97 @@ fun Settings(
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Text(
-            text = "Settings",
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontFamily = rubikFont,
-            fontSize = 40.sp,
-            lineHeight = 45.sp,
-            textAlign = TextAlign.Start,
-            // modifier = Modifier.padding(bottom = 40.dp)
-        ) // Welcome
-
-        RunHotOrCold(hotcold = hotcold, updateHotCold = { newHotCold ->
-            reGetWeatherMessage()
-            setHotCold(newHotCold.toDouble())
-            hotcold = newHotCold
-        }, inSettings = true)
-
-        SectionHeader(text = "General")
-        SectionLink(title = "Location", data = user.location?.locationName ?: "No Location") {
-            // onclick - navigate to location screen
-            setPreviousScreen(Screen.SettingsPage)
-            navController.navigate(Screen.LocationPage.route) {
-                launchSingleTop = true
-            } // navcontroller.navigate
-        }
-
-        // TODO see if looks right + works
-        // toggle for useCelsius
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    setUseCelsius(!useCelsius)
-                    useCelsius = !useCelsius
-                },
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "Use Celsius",
+                text = "Settings",
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontFamily = rubikFont,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onSurface
-            ) // title
+                fontSize = 40.sp,
+                lineHeight = 45.sp,
+                textAlign = TextAlign.Start,
+                // modifier = Modifier.padding(bottom = 40.dp)
+            ) // Welcome
 
-            Switch(
-                checked = useCelsius,
-                onCheckedChange = {
-                    setUseCelsius(!useCelsius)
-                    useCelsius = !useCelsius
-                }
-            ) // Switch
+            RunHotOrCold(hotcold = hotcold, updateHotCold = { newHotCold ->
+                reGetWeatherMessage()
+                setHotCold(newHotCold.toDouble())
+                hotcold = newHotCold
+                updateCustomerInDB()
+            }, inSettings = true)
+
+            SectionHeader(text = "General")
+            SectionLink(title = "Location", data = user.location?.locationName ?: "No Location") {
+                // onclick - navigate to location screen
+                setPreviousScreen(Screen.SettingsPage)
+                navController.navigate(Screen.LocationPage.route) {
+                    launchSingleTop = true
+                } // navcontroller.navigate
+            }
+
+            // toggle for useCelsius
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        setUseCelsius(!useCelsius)
+                        useCelsius = !useCelsius
+                        updateCustomerInDB()
+                    },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Use Celsius",
+                    fontFamily = rubikFont,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                ) // title
+
+                Switch(
+                    checked = useCelsius,
+                    onCheckedChange = {
+                        setUseCelsius(!useCelsius)
+                        useCelsius = !useCelsius
+                        updateCustomerInDB()
+                    }
+                ) // Switch
+            }
+
+            SectionHeader(text = "Looks")
+            // SectionLink(title = "Theme", data = "Blue")
+            SectionLink(title = "Hair", data = hair.toString().lowercase()) {
+                // onclick
+                showBottomSheet = true
+            }
+            SectionLink(title = "Skin Color", data = "") {
+                // onclick - navigate to welcomewizard2
+                setPreviousScreen(Screen.SettingsPage)
+                navController.navigate(Screen.WelcomeWizard2.route) {
+                    launchSingleTop = true
+                } // navcontroller.navigate
+            } // skin color link}
         }
 
-        SectionHeader(text = "Looks")
-        // SectionLink(title = "Theme", data = "Blue")
-        SectionLink(title = "Hair", data = hair.toString().lowercase()) {
-            // onclick
-            showBottomSheet = true
-        }
-        SectionLink(title = "Skin Color", data = "") {
-            // onclick - navigate to welcomewizard2
-            setPreviousScreen(Screen.SettingsPage)
-            navController.navigate(Screen.WelcomeWizard2.route) {
-                launchSingleTop = true
-            } // navcontroller.navigate
-        } // skin color link
+        // get current location
+        // Spacer(modifier = Modifier.fillMaxHeight())
+        FilledTonalButton(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            onClick = {
+                // TODO: get current location
+            }
+        ) {
+            Text(
+                text = "Use Current Location",
+                fontFamily = rubikFont,
+                color = MaterialTheme.colorScheme.primary
+            ) // Text
+        } // Filled Tonal Button
 
         // modal bottom sheet for selecting hair
         if (showBottomSheet) {
@@ -149,6 +174,7 @@ fun Settings(
                         updateHairstyle = { newHair ->
                             hair = newHair
                             setHairstyle(newHair)
+                            updateCustomerInDB()
                         },
                         reGetWeatherMessage = { reGetWeatherMessage() }
                     ) // chose a hairstyle
@@ -156,9 +182,6 @@ fun Settings(
 
             } // ModalBottomSheet
         } // show Bottom Sheet
-
-
-        // TODO add get current location button
 
     } // overarching column
 } // Settings
@@ -227,7 +250,8 @@ fun SettingsPreview() {
             setHairstyle = { },
             setUseCelsius = { },
             setPreviousScreen = { },
-            reGetWeatherMessage = { }
+            reGetWeatherMessage = { },
+            updateCustomerInDB = { }
         )
     }
 }

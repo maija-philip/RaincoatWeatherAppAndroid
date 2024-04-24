@@ -59,7 +59,7 @@ fun Homepage(
     modifier: Modifier = Modifier
 ) {
 
-    var shouldShowWeatherData by remember { mutableStateOf(true) }
+    val shouldShowWeatherData = !weatherLoading && weatherErrorMessage == "" && locationErrorMessage == ""
 
     // want even loading and error to align properly
     Column(
@@ -87,10 +87,8 @@ fun Homepage(
 
         // check to see whether to display error or data
         if (weatherLoading) {
-            shouldShowWeatherData = false
             Text(text = "Loading...")
         } else if (weatherErrorMessage != "") {
-            shouldShowWeatherData = false
             Text(
                 text = "Error: $weatherErrorMessage",
                 fontWeight = FontWeight.Bold,
@@ -98,20 +96,17 @@ fun Homepage(
             ) // error text
         }
         else if (locationErrorMessage != "") {
-            shouldShowWeatherData = false
             Text(
                 text = "Error: $locationErrorMessage",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.error
             ) // error text
         } else if (weather == null) {
-            shouldShowWeatherData = false
             Text(
                 text = "Something went wrong fetching the data. Try again later.",
                 fontWeight = FontWeight.Bold,
             ) // error text
         } else if (user.location == null) {
-            shouldShowWeatherData = false
             Text(
                 text = "No Location Info",
                 fontWeight = FontWeight.Bold,

@@ -62,11 +62,6 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
-    // getting user location
-    // TODO: maybe don't need
-    implementation("com.google.android.gms:play-services-location:21.2.0")
-    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
-
     // Coil for async images
     implementation("io.coil-kt:coil-compose:2.5.0")
 
@@ -79,6 +74,9 @@ dependencies {
 
     // live data
     implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
+
+    // for permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 
     implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")

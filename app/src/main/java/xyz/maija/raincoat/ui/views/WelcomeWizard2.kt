@@ -42,6 +42,7 @@ fun WelcomeWizard2(
     previousScreen: Screen,
     setSkinColor: (Color) -> Unit,
     setPreviousScreen: (Screen) -> Unit,
+    updateCustomerInDB: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -51,6 +52,7 @@ fun WelcomeWizard2(
         // val tempPrevScreen = previousScreen don't think i need this bc i'm not getting a changed version of prevscreen
         setSkinColor(skinColor)
         setPreviousScreen(Screen.WelcomeWizard2)
+        updateCustomerInDB()
 
         // check to see if we go on to the homepage or back to settings
         if (previousScreen == Screen.WelcomeWizard1 || previousScreen == Screen.LocationPage) {
@@ -152,7 +154,8 @@ fun WelcomeWizard2Preview() {
             navController,
             previousScreen = Screen.WelcomeWizard1,
             setSkinColor = { },
-            setPreviousScreen = {}
+            setPreviousScreen = {},
+            updateCustomerInDB = {}
             )
     }
 }

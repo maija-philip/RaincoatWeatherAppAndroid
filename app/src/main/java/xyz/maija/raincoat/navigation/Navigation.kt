@@ -64,6 +64,7 @@ fun Navigation(initialScreen: String, raincoatViewModel: RaincoatViewModel) {
                 previousScreen = raincoatViewModel.previousScreen,
                 setSkinColor = { raincoatViewModel.setSkinColor(it) },
                 setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
+                updateCustomerInDB = { raincoatViewModel.updateCustomerInDB() }
             )
         } // composable screen
 
@@ -75,7 +76,8 @@ fun Navigation(initialScreen: String, raincoatViewModel: RaincoatViewModel) {
                 setHairstyle = { raincoatViewModel.setHair(it) },
                 setUseCelsius = { raincoatViewModel.setUseCelsius(it) },
                 setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
-                reGetWeatherMessage = { raincoatViewModel.weatherData?.resetTempMessage(raincoatViewModel.user) }
+                reGetWeatherMessage = { raincoatViewModel.weatherData?.resetTempMessage(raincoatViewModel.user) },
+                updateCustomerInDB = { raincoatViewModel.updateCustomerInDB() }
             )
         } // composable screen
 
