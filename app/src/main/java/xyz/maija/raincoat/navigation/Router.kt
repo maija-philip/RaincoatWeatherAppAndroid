@@ -59,8 +59,9 @@ fun Router(
 
     // get the location and only save data as apart of user if we can get the latitude and longitude
     val currentLocation by raincoatViewModel.getLocationLiveData().observeAsState()
+    // Log.d("MEP", "Router: currentLocation $currentLocation")
     if (currentLocation?.longitude != null) {
-        Log.d("MEP", "Router: got location")
+        // Log.d("MEP", "Router: got location")
         raincoatViewModel.setLocation(Location(
             locationName = "Your Location",
             shortname = "Your Location",
