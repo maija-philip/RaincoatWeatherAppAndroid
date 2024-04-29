@@ -7,6 +7,10 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 
 
+/*
+    Combines all the colors from Color.kt together to create an easily accessible cohesive theme used around the UI
+ */
+
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,

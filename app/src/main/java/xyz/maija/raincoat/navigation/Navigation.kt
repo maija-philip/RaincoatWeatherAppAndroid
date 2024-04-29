@@ -19,6 +19,9 @@ import xyz.maija.raincoat.ui.views.WelcomeWizard1
 import xyz.maija.raincoat.ui.views.WelcomeWizard2
 import xyz.maija.raincoat.utils.LocationDetails
 
+/*
+    Handles which screen to display along with handing out necessary view model data and methods as needed by the screens.
+ */
 
 @Composable
 fun Navigation(

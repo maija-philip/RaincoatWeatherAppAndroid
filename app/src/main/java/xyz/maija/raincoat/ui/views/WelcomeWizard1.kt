@@ -48,6 +48,10 @@ import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
 
+/*
+    Welcomes a new user to the app and instructs them to pick a hairstyle and rank if they tend to feel hot or cold.
+ */
+
 @Composable
 fun WelcomeWizard1(
     navController: NavController,

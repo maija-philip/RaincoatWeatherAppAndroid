@@ -7,6 +7,9 @@ import xyz.maija.raincoat.data.dao.UserDao
 import xyz.maija.raincoat.data.entities.User
 
 
+/*
+    Handles the getting and retrieving of User data from the database
+ */
 class UserRepository(application: Application) {
 
     private var userDao: UserDao

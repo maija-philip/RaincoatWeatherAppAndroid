@@ -7,6 +7,9 @@ import androidx.room.PrimaryKey
 import xyz.maija.raincoat.classes.Hairstyle
 import xyz.maija.raincoat.classes.Location
 
+/*
+    Stores the preferences and last location of the user in a database in order to store the information for the next time they use the app
+ */
 @Entity
 data class User (
 

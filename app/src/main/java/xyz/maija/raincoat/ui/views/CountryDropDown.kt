@@ -30,6 +30,9 @@ import androidx.compose.ui.unit.dp
 import xyz.maija.raincoat.data.Countries
 import xyz.maija.raincoat.data.Country
 
+/*
+    Used in the Location View in order to pick from a searchable list of all the countries supported by the API
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 // used this resource https://alexzh.com/jetpack-compose-dropdownmenu/

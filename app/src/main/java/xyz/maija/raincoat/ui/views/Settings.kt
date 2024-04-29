@@ -50,6 +50,9 @@ import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 import xyz.maija.raincoat.utils.LocationDetails
 
+/*
+    Provides options for users to change the information they entered in the wizard, as well as changing their location as many times as they want
+ */
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable

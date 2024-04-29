@@ -21,6 +21,10 @@ import xyz.maija.raincoat.classes.LocationLiveData
 import xyz.maija.raincoat.data.api.model.RaincoatViewModel
 import java.security.Permissions
 
+/*
+    start’s up the view model, asks for location permission as early as we can, as well as displaying the navigation which has the current screen.
+ */
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun Router(

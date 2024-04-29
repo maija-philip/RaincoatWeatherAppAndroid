@@ -43,6 +43,10 @@ import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
+/*
+    Gives you the chance to enter a location by the country and postal code instead of by the location of your phone
+ */
+
 @Composable
 fun LocationScreen(
     navController: NavController,

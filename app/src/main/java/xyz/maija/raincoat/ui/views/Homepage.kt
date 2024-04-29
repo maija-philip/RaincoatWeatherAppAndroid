@@ -46,6 +46,9 @@ import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
+/*
+    Displays the weather information the user requested as well as a graphic showing how to dress for the weather and a message telling them how to prepare for the weather
+ */
 
 @Composable
 fun Homepage(

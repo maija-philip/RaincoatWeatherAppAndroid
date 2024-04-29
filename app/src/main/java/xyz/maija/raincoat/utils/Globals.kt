@@ -1,5 +1,8 @@
 package xyz.maija.raincoat.utils
 
+/*
+    Keeps track of any app wide global variables which right now the only thing is the API key
+ */
 class Globals {
 
     companion object {

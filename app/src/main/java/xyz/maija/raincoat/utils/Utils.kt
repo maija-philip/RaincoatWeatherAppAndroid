@@ -5,6 +5,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import xyz.maija.raincoat.R
 
+/*
+
+ */
+
 val rubikFont = FontFamily(
     Font(R.font.rubik_extrabold, FontWeight.ExtraBold),
     Font(R.font.rubik_black, FontWeight.Black),

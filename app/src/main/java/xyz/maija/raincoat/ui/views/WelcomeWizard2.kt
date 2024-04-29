@@ -4,6 +4,7 @@ import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,7 +43,9 @@ import xyz.maija.raincoat.navigation.Screen
 import xyz.maija.raincoat.utils.rubikFont
 import xyz.maija.raincoat.ui.theme.RaincoatTheme
 
-// TODO: camera not working
+/*
+   Allows the user to choose a skin tone based on a taken or picked image of themselves.
+ */
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -56,6 +59,7 @@ fun WelcomeWizard2(
 ) {
 
     var skinColor by remember { mutableStateOf(User.DEFAULT_SKIN_COLOR) }
+    val isDarkMode = isSystemInDarkTheme()
     val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     AskForPermission(
@@ -120,7 +124,7 @@ fun WelcomeWizard2(
         } // Header Text Column
 
         Image(
-            painter = painterResource(id = R.drawable.bald_light),
+            painter = painterResource(id = if (isDarkMode) R.drawable.bald_dark else R.drawable.bald_light),
             contentDescription = "Bald headshot",
             modifier = Modifier
                 .size(300.dp)

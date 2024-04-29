@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import xyz.maija.raincoat.data.entities.User
 
 
-// on data access object for each entity (usually, with joins you may have a combined one)
+/**
+ * Data Access Object to access the User from the database
+ */
+// one data access object for each entity (usually, with joins you may have a combined one)
 @Dao
 interface UserDao {
 

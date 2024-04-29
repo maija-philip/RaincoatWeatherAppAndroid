@@ -38,6 +38,10 @@ import java.io.FileDescriptor
 // https://stackoverflow.com/questions/77624700/how-to-get-drawable-to-bitmap-from-asyncimage-coil-jetpack-compose
 
 
+/*
+    Use the camera or the photo picker to pick an image and it will set an avg color variable in the class it is called in so that the skin color of the user can be set
+ */
+
 @Composable
 fun PickImageGetAvgColor(
     setAvgColor: (Color) -> Unit,

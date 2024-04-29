@@ -7,8 +7,9 @@ import xyz.maija.raincoat.classes.Hairstyle
 import xyz.maija.raincoat.classes.Location
 
 // https://developer.android.com/training/data-storage/room/referencing-data
-
-// Convert my objs and enums into basic types in order to user room to store in database
+/*
+    Convert my objects and enums into basic types in order to use room to store in the database
+ */
 class Converters {
     @TypeConverter
     fun toHair(value: Int?): Hairstyle? {

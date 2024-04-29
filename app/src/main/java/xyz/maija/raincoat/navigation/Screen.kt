@@ -1,5 +1,8 @@
 package xyz.maija.raincoat.navigation
 
+/*
+    Keeps track of all the screens that the navigation will need to display and their routes.
+ */
 // sealed means that subclasses are predetermined and finite
 sealed class Screen(val route: String) {
 
@@ -9,16 +12,5 @@ sealed class Screen(val route: String) {
     object  LocationPage: Screen(route = "location_page")
     object  WelcomeWizard1: Screen(route = "welcome_wizard_1")
     object  WelcomeWizard2: Screen(route = "welcome_wizard_2")
-
-    // will only work with required params right now
-    fun withArgs(vararg args: String): String {
-        return buildString {
-            append(route)
-            // loop thru each argument and append
-            args.forEach { arg ->
-                append("/$arg")
-            } // for each arg
-        } // buildString
-    } // withArgs
 
 } // sealed class Screen
