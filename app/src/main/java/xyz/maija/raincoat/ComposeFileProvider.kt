@@ -1,4 +1,4 @@
-package xyz.maija.raincoat.classes
+package xyz.maija.raincoat
 
 import android.content.Context
 import android.net.Uri

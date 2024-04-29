@@ -17,10 +17,15 @@ import xyz.maija.raincoat.ui.views.LocationScreen
 import xyz.maija.raincoat.ui.views.Settings
 import xyz.maija.raincoat.ui.views.WelcomeWizard1
 import xyz.maija.raincoat.ui.views.WelcomeWizard2
+import xyz.maija.raincoat.utils.LocationDetails
 
 
 @Composable
-fun Navigation(initialScreen: String, raincoatViewModel: RaincoatViewModel) {
+fun Navigation(
+    initialScreen: String,
+    raincoatViewModel: RaincoatViewModel,
+    currentLocation: LocationDetails?
+) {
 
     val navController = rememberNavController() // navigation controller state
 
@@ -75,9 +80,11 @@ fun Navigation(initialScreen: String, raincoatViewModel: RaincoatViewModel) {
                 setHotCold = { raincoatViewModel.setHotCold(it) },
                 setHairstyle = { raincoatViewModel.setHair(it) },
                 setUseCelsius = { raincoatViewModel.setUseCelsius(it) },
+                setUserLocation = { raincoatViewModel.setLocation(it) },
                 setPreviousScreen = { raincoatViewModel.setPreviousScreen(it) },
                 reGetWeatherMessage = { raincoatViewModel.weatherData?.resetTempMessage(raincoatViewModel.user) },
-                updateCustomerInDB = { raincoatViewModel.updateCustomerInDB() }
+                updateCustomerInDB = { raincoatViewModel.updateCustomerInDB() },
+                currentLocation = currentLocation
             )
         } // composable screen
 

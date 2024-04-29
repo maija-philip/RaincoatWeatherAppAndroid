@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import xyz.maija.apihomework.data.api.model.GeoLocationData
 import xyz.maija.raincoat.classes.Hairstyle
 import xyz.maija.raincoat.classes.Location
+import xyz.maija.raincoat.classes.LocationLiveData
 import xyz.maija.raincoat.data.entities.User
 import xyz.maija.raincoat.classes.Weather
 import xyz.maija.raincoat.data.api.APIServiceLocation
@@ -66,6 +67,13 @@ class RaincoatViewModel(appObj: Application): AndroidViewModel(appObj) {
         get() = _userList
 
 
+    // location
+    private val locationLiveData = LocationLiveData(appObj)
+    fun getLocationLiveData() = locationLiveData
+
+    fun startLocationUpdates() {
+        locationLiveData.startLocationUpdates()
+    }
 
 
     // methods
@@ -113,6 +121,9 @@ class RaincoatViewModel(appObj: Application): AndroidViewModel(appObj) {
                 )
                 val weatherDataClean = Weather(user, weatherDataMessy)
                 _weatherData = listOf(weatherDataClean)
+                user.location?.locationName = weatherDataMessy.city.name
+                user.location?.shortname = weatherDataMessy.city.name
+                updateCustomerInDB()
                 weatherLoading = false
 
             } catch (e: Exception) {

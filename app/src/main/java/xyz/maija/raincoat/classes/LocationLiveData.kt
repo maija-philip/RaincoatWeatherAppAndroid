@@ -19,6 +19,9 @@ import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import xyz.maija.raincoat.utils.LocationDetails
 import java.util.Locale
 
+/*
+    Access the current location of the phone and update the location as it changes
+ */
 class LocationLiveData(var context: Context): LiveData<LocationDetails>() {
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)

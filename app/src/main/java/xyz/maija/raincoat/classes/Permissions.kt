@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -18,6 +19,10 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 
+/*
+    Has all of the functionality of asking for permissions in one place with a call to AskForPermission() function so it's easy to access anywhere you need to ask for a permission.
+ */
+
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun AskForPermission(
@@ -27,24 +32,34 @@ fun AskForPermission(
     reason: String, context: Context
 ) {
 
+    Log.d("MEP", "AskForPermission: Here")
+
     if (permissionState.status.isGranted) {
-        // use camera
+        Log.d("MEP", "AskForPermission: Granted")
         Toast.makeText(context,"$permissionName Permission Granted", Toast.LENGTH_LONG).show()
 
     } else if (!permissionState.status.shouldShowRationale) {
+        Log.d("MEP", "AskForPermission: asked first time or denied perm?")
         // if permission is asked for the first time or denied permanently
         context.isPermissionAskedForFirstTime(permission)
             .also { result ->
                 // if it's the first time asked
                 if (result) {
+                    Log.d("MEP", "AskForPermission: should ask")
                     // will run everytime it gets recomposed
                     SideEffect {
                         permissionState.launchPermissionRequest()
                     }
                     context.permissionAskedForFirstTime(permission)
-                } // it first time asked
+                } else {
+                    Log.d("MEP", "AskForPermission: got here?")
+                    SideEffect {
+                        permissionState.launchPermissionRequest()
+                    }
+                }
             } // also
     } else if (permissionState.status.shouldShowRationale) {
+        Log.d("MEP", "AskForPermission: why here")
         ShowRationaleContent(textToShow = reason) {
             permissionState.launchPermissionRequest()
         }
