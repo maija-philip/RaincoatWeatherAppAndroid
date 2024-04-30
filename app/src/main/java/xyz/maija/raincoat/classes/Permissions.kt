@@ -39,7 +39,7 @@ fun AskForPermission(
     if (permissionState.status.isGranted) {
         if (!toastAlreadyDisplayed) {
             toastAlreadyDisplayed = true
-            Toast.makeText(context,"$permissionName Permission Granted", Toast.LENGTH_LONG).show()
+            Toast.makeText(context,"$permissionName Permission Granted", Toast.LENGTH_SHORT).show()
         } // if not already displayed
     } else {
         // if permission is asked for the first time or denied permanently

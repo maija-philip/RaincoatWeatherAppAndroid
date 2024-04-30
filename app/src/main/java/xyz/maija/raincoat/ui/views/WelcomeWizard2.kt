@@ -1,12 +1,15 @@
 package xyz.maija.raincoat.ui.views
 
 import android.Manifest
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,9 +19,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +41,8 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import xyz.maija.raincoat.R
 import xyz.maija.raincoat.classes.AskForPermission
 import xyz.maija.raincoat.data.entities.User
@@ -59,7 +66,9 @@ fun WelcomeWizard2(
 ) {
 
     var skinColor by remember { mutableStateOf(User.DEFAULT_SKIN_COLOR) }
+    var isFindingImage by remember { mutableStateOf(false) }
     val isDarkMode = isSystemInDarkTheme()
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     AskForPermission(
@@ -88,81 +97,101 @@ fun WelcomeWizard2(
                 } // popUpTo
             } // navcontroller.navigate
         } else {
-         // go back to settings
+            // go back to settings
             navController.popBackStack()
         }
     } // navigateToNextScreen
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
+    if (isFindingImage) {
+        if (skinColor != User.DEFAULT_SKIN_COLOR) {
+            isFindingImage = false
+        }
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "Customize your skin color",
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontFamily = rubikFont,
-                fontSize = 40.sp,
-                lineHeight = 45.sp,
-                textAlign = TextAlign.Center
-            ) // Welcome
-
-            Text(
-                text = "Click below to take an image of a patch of skin for your character",
-                fontFamily = rubikFont,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-        } // Header Text Column
-
-        Image(
-            painter = painterResource(id = if (isDarkMode) R.drawable.bald_dark else R.drawable.bald_light),
-            contentDescription = "Bald headshot",
-            modifier = Modifier
-                .size(300.dp)
-                .background(skinColor)
-                .border(4.dp, MaterialTheme.colorScheme.surface),
-            contentScale = ContentScale.Fit,
-        )
-        
+            Text(text = "Loading Skin Color...", fontFamily = rubikFont)
+        } // loading box
+    } else {
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = modifier
+                .fillMaxSize()
+                .padding(40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (skinColor != User.DEFAULT_SKIN_COLOR) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { navigateToNextScreen() }
-                ) {
-                    Text("Continue", fontFamily = rubikFont)
-                }
-            } // if skin color has changed
-            PickImageGetAvgColor(
-                setAvgColor = { newColor ->
-                  skinColor = newColor
-                },
-                usesCamera = cameraPermissionState.status.isGranted,
-                isSecondary = skinColor != User.DEFAULT_SKIN_COLOR
-            )
-            if (skinColor == User.DEFAULT_SKIN_COLOR ) {
-                TextButton(onClick = {
-                    navigateToNextScreen()
-                }) {
-                    Text("Skip For Now", fontFamily = rubikFont)
-                }
-            } // if skin is not changed
-        } // Buttons Column
-    } // overarching column
 
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Customize your skin color",
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontFamily = rubikFont,
+                    fontSize = 40.sp,
+                    lineHeight = 45.sp,
+                    textAlign = TextAlign.Center
+                ) // Welcome
 
+                Text(
+                    text = "Click below to take an image of a patch of skin for your character",
+                    fontFamily = rubikFont,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+            } // Header Text Column
+
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = if (isDarkMode) R.drawable.bald_dark else R.drawable.bald_light),
+                    contentDescription = "Bald headshot",
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .fillMaxSize()
+                        .background(skinColor)
+                        .border(4.dp, MaterialTheme.colorScheme.surface),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (skinColor != User.DEFAULT_SKIN_COLOR) {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { navigateToNextScreen() }
+                    ) {
+                        Text("Continue", fontFamily = rubikFont)
+                    }
+                } // if skin color has changed
+                PickImageGetAvgColor(
+                    setAvgColor = { newColor ->
+                        skinColor = newColor
+                    },
+                    usesCamera = cameraPermissionState.status.isGranted,
+                    isSecondary = skinColor != User.DEFAULT_SKIN_COLOR,
+                    setLoading = { bool ->
+                        isFindingImage = bool
+                    }
+                )
+                if (skinColor == User.DEFAULT_SKIN_COLOR ) {
+                    TextButton(onClick = {
+                        navigateToNextScreen()
+                    }) {
+                        Text("Skip For Now", fontFamily = rubikFont)
+                    }
+                } // if skin is not changed
+            } // Buttons Column
+        } // overarching column
+    } // else not finding image right now
 
 } // WelcomeWizard2
 
@@ -178,6 +207,6 @@ fun WelcomeWizard2Preview() {
             setSkinColor = { },
             setPreviousScreen = {},
             updateCustomerInDB = {}
-            )
+        )
     }
 }

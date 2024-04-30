@@ -46,7 +46,8 @@ import java.io.FileDescriptor
 fun PickImageGetAvgColor(
     setAvgColor: (Color) -> Unit,
     usesCamera: Boolean,
-    isSecondary: Boolean
+    isSecondary: Boolean,
+    setLoading: (Boolean) -> Unit = {},
 ) {
 
     val context = LocalContext.current
@@ -59,7 +60,7 @@ fun PickImageGetAvgColor(
         mutableStateOf<Uri?>(null)
     }
 
-   // select image from photo picker
+    // select image from photo picker
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -76,7 +77,7 @@ fun PickImageGetAvgColor(
         } // onResult
     ) // cameraLauncher
 
-    Box() {
+    Box {
 
         if (isSecondary) {
             TextButton(
@@ -126,12 +127,14 @@ fun PickImageGetAvgColor(
             } // button
         } // else not secondary
 
-
-
         // when the image uri is available, get the average color
         if (hasImage && imageUri != null) {
             if (imageUri != null) {
+
                 val bitmap = uriToBitmap(imageUri!!, context) // we checked to make sure not null
+
+                setLoading(true)
+
                 if (bitmap != null) {
                     val avgColor = bitmapToAvgColor(bitmap)
                     setAvgColor(avgColor) // set the state

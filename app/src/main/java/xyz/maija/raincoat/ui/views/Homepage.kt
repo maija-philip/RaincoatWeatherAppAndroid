@@ -5,9 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,6 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import xyz.maija.apihomework.data.api.model.City
+import xyz.maija.apihomework.data.api.model.Coord
+import xyz.maija.raincoat.classes.Hairstyle
+import xyz.maija.raincoat.classes.Location
 import xyz.maija.raincoat.classes.Message
 import xyz.maija.raincoat.data.entities.User
 import xyz.maija.raincoat.classes.Weather
@@ -116,13 +123,19 @@ fun Homepage(
             ) // error text
         } else {
 
-            WeatherImage(user, weather.message.image)
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                WeatherImage(user, weather.message.image)
+            }
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
             ) {
 
                 WeatherText(weather.message)
@@ -298,23 +311,51 @@ fun WeatherImage(user: User, imageString: String) {
         painter = painterResource(id = imgId),
         contentDescription = "Person wearing shorts and a tank top",
         modifier = Modifier
-            .scale(1.4f)
+            .aspectRatio(73869f/100000f)
+            .fillMaxSize()
             .background(user.skincolor)
-            .border(4.dp, MaterialTheme.colorScheme.surface),
+            .border(5.dp, MaterialTheme.colorScheme.surface),
         contentScale = ContentScale.Fit,
     )
-}
+} // Weather Image
 
 
 @Preview(showBackground = true)
 @Composable
 fun HomepagePreview() {
     val navController = rememberNavController()
+    val user = User(
+        id = 0,
+        hair = Hairstyle.BALD,
+        hotcold = 50.0,
+        skincolor = User.DEFAULT_SKIN_COLOR,
+        location = Location(),
+        useCelsius = false
+    )
+    val weather = Weather(
+        user = user,
+        messyData = xyz.maija.apihomework.data.api.model.WeatherData(
+            city = City(
+                coord = Coord(
+                    lat = 0.0,
+                    lon = 0.0
+                ),
+                country = "",
+                id = 0,
+                name = "",
+                population = 0,
+                sunrise = 0,
+                sunset = 0,
+                timezone = 0
+            ), cnt = 0, cod = "", list = listOf(), message = 0
+        )
+    )
+
     RaincoatTheme {
         Homepage(
             navController,
-            User(),
-            weather = null,
+            user,
+            weather = weather,
             weatherErrorMessage = "",
             weatherLoading = false,
             locationErrorMessage = "",
